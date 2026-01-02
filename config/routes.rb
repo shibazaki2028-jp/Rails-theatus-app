@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   resource :session, only: [:create, :destroy]
 
   #システム管理者の機能
-  namespace :admin do
+  namespace :system_admin do
     root "top#index"
     resources :members do
       get "search", on: :collection
