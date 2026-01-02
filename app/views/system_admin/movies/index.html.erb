@@ -1,0 +1,28 @@
+<% @page_title = "映画管理(システム管理者)" %>
+<h1><%= @page_title %></h1>
+
+<%= link_to "新規映画登録", new_system_admin_movie_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>タイトル</th>
+      <th>カテゴリ</th>
+      <th>上映時間</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @movies.each do |movie| %>
+      <tr>
+        <td><%= movie.title %></td>
+        <td><%= movie.category %></td>
+        <td><%= movie.screening_time %>分</td>
+        <td>
+          <%= link_to "詳細", system_admin_movie_path(movie) %>
+          <%= link_to "編集", edit_system_admin_movie_path(movie) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
