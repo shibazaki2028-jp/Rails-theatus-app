@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_12_29_074839) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_02_034447) do
+  create_table "accounts", force: :cascade do |t|
+    t.string "user_name"
+    t.string "email"
+    t.string "password"
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "movies", force: :cascade do |t|
     t.string "title", null: false
     t.string "category", null: false
@@ -32,6 +41,31 @@ ActiveRecord::Schema[7.0].define(version: 2025_12_29_074839) do
     t.datetime "updated_at", null: false
     t.index ["movie_id"], name: "index_schedules_on_movie_id"
     t.index ["screen_id"], name: "index_schedules_on_screen_id"
+  end
+
+  create_table "screens", force: :cascade do |t|
+    t.integer "theater_id", null: false
+    t.text "info"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["theater_id"], name: "index_screens_on_theater_id"
+  end
+
+  create_table "seats", force: :cascade do |t|
+    t.integer "screen_id", null: false
+    t.string "verse", null: false
+    t.string "queue", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["screen_id"], name: "index_seats_on_screen_id"
+  end
+
+  create_table "theaters", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.string "telephone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "schedules", "movies"
