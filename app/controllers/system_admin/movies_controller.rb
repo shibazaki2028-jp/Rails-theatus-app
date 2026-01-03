@@ -35,6 +35,7 @@ class SystemAdmin::MoviesController < ApplicationController
     #内容を保存
     def update
         @movie = Movie.find(params[:id])
+        @movie.assign_attributes(params[:movie])
         if @movie.save
             redirect_to system_admin_movies_path, notice: "映画の更新が完了しました。"
         else
