@@ -33,5 +33,7 @@ module Theatus
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    ActionController::Parameters.permit_all_parameters = true
   end
 end
