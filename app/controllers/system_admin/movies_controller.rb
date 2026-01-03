@@ -47,7 +47,7 @@ class SystemAdmin::MoviesController < ApplicationController
     def destroy
         @movie = Movie.find(params[:id])
         @movie.destroy
-        redirect_to :root, notice: "映画の削除が完了しました。"
+        redirect_to system_admin_movies_path, notice: "映画の削除が完了しました。"
     end
     private
   

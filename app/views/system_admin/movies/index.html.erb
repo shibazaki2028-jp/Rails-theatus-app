@@ -21,7 +21,8 @@
         <td>
           <%= link_to "詳細", system_admin_movie_path(movie) %>
           <%= link_to "編集", edit_system_admin_movie_path(movie) %>
-        </td>
+          <%= link_to "削除", [:system_admin, movie], method: :delete,
+                    data: { confirm: "本当に削除しますか？" }%>        </td>
       </tr>
     <% end %>
   </tbody>
