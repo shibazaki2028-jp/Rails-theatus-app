@@ -32,7 +32,7 @@ Rails.application.routes.draw do
       resources :reservations
     end
     resources :movies
-    resources :theaters, only: [:index, :show] do
+    resources :theaters, only: [:index, :show, :new, :create] do
       resources :screens do
         resources :seats
       end
