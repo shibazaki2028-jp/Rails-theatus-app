@@ -1,4 +1,6 @@
 class SystemAdmin::MoviesController < ApplicationController
+    before_action :permit_all_parameters
+
 
     #一覧表示
     def index 
@@ -19,7 +21,7 @@ class SystemAdmin::MoviesController < ApplicationController
     def create
         @movie = Movie.new(params[:movie])
         if @movie.save
-            redirect_to :root, notice: "映画の登録が完了しました。"
+            redirect_to system_admin_movies_path, notice: "映画の登録が完了しました。"
         else
             render "new"
         end
@@ -34,7 +36,7 @@ class SystemAdmin::MoviesController < ApplicationController
     def update
         @movie = Movie.find(params[:id])
         if @movie.save
-            redirect_to :root, notice: "映画の更新が完了しました。"
+            redirect_to system_admin_movies_path, notice: "映画の更新が完了しました。"
         else
             render "edit"
         end
@@ -46,5 +48,10 @@ class SystemAdmin::MoviesController < ApplicationController
         @movie.destroy
         redirect_to :root, notice: "映画の削除が完了しました。"
     end
-
+    private
+  
+    def permit_all_parameters
+      params.permit!
+    end
+  
 end
