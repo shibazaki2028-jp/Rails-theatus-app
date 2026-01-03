@@ -1,0 +1,25 @@
+<% @page_title = "映画館新規登録(システム管理者)" %>
+<h1><%= @page_title %></h1>
+
+<%= link_to "映画館一覧", system_admin_theaters_path %>
+
+<%= form_for [:system_admin, @theater] do |form| %>
+  <table class = "form-table">
+    <tbody>
+        <tr>
+        <th><%= form.label :name, "映画館名" %></th>
+        <td><%= form.text_field :name, size: 20 %></td>
+    </tr>
+    <tr>
+        <th><%= form.label :address,  "住所" %></th>
+        <td><%= form.text_field :address %></td>
+    </tr>
+    <tr>
+        <th><%= form.label :telephone,  "電話番号" %></th>
+        <td><%= form.text_field :telephone %></td>
+    </tr>
+    </tbody>
+  </table>
+  <!-- >submitメソッドで送信ボタン<-->
+  <div><%= form.submit %></div>
+<% end %>
