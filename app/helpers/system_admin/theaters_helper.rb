@@ -1,2 +1,2 @@
-module TheatersHelper
+module SystemAdmin::TheatersHelper
 end

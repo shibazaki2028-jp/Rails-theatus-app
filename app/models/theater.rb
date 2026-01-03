@@ -1,7 +1,7 @@
 class Theater < ApplicationRecord
     has_many :screens, dependent: :destroy
 
-    before_action :normalize_telephone
+    before_validation :normalize_telephone
 
     validates :name, presence: true
     validates :address, presence: true
@@ -10,7 +10,7 @@ class Theater < ApplicationRecord
         length: { minimum: 10, maximum: 13, allow_blank: true },
         uniqueness: true
 
-    def formated_telephone
+    def formatted_telephone
         return telephone if telephone.blank?
         # ハイフン挿入
         if telephone.length == 10
@@ -23,5 +23,5 @@ class Theater < ApplicationRecord
     def normalize_telephone
     # ハイフンを除去して保存する
     self.telephone = telephone.gsub(/[-]/, "") if telephone.present?
-  end
+    end
 end

@@ -1,4 +1,5 @@
-class TheatersController < ApplicationController
+class SystemAdmin::TheatersController < ApplicationController
+
     def index
         @theaters = Theater.all
     end
