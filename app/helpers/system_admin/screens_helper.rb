@@ -1,0 +1,2 @@
+module SystemAdmin::ScreensHelper
+end
