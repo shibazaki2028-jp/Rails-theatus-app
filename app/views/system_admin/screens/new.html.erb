@@ -1,0 +1,17 @@
+<% @page_title = "スクリーン新規登録(システム管理者)" %>
+<h1><%= @page_title %></h1>
+
+<%= link_to "スクリーン一覧", system_admin_theater_screens_path(@theater) %>
+
+<%= form_for [:system_admin, @theater, @screen] do |form| %>
+  <table class = "form-table">
+    <tbody>
+    <tr>
+        <th><%= form.label :info,  "座席情報" %></th>
+        <td><%= form.text_field :info %></td>
+    </tr>
+    </tbody>
+  </table>
+  <!-- >submitメソッドで送信ボタン<-->
+  <div><%= form.submit %></div>
+<% end %>
