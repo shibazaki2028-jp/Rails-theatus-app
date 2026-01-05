@@ -2,6 +2,8 @@ class Schedule < ApplicationRecord
     belongs_to :movie
     belongs_to :screen
 
+    has_many :reservations, dependent: :destroy
+
     validates :movie_id, presence: true
     validates :screen_id, presence: true
     validates :screened_at, presence: true
