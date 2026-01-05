@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_05_155949) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_05_183105) do
   create_table "accounts", force: :cascade do |t|
     t.string "user_name"
     t.string "email"
@@ -30,6 +30,15 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_05_155949) do
     t.integer "screening_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "reservation_details", force: :cascade do |t|
+    t.integer "reservation_id", null: false
+    t.integer "seat_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reservation_id"], name: "index_reservation_details_on_reservation_id"
+    t.index ["seat_id"], name: "index_reservation_details_on_seat_id"
   end
 
   create_table "reservations", force: :cascade do |t|
@@ -77,6 +86,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_05_155949) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "reservation_details", "reservations"
+  add_foreign_key "reservation_details", "seats"
   add_foreign_key "reservations", "schedules"
   add_foreign_key "reservations", "users"
   add_foreign_key "schedules", "movies"
