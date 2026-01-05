@@ -3,5 +3,5 @@ class Screen < ApplicationRecord
     has_many :seats, dependent: :destroy
     has_many :schedules, dependent: :destroy
 
-    validates :info 
+    validates :info, presence: true
 end

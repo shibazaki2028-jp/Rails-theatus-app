@@ -1,0 +1,26 @@
+<% @page_title = "スクリーン管理(システム管理者)" %>
+<h1><%= @page_title %></h1>
+
+<%= link_to "新規スクリーン登録", new_system_admin_theater_screen_path(@theater) %>
+<table>
+  <thead>
+    <tr>
+      <th>スクリーンID</th>
+      <th>座席情報</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @screens.each do |screen| %>
+      <tr>
+        <td><%= screen.id %></td>
+        <td><%= screen.info %></td>
+        <td>
+          <%= link_to "詳細", system_admin_screen_path(screen) %>
+          <%= link_to "編集", edit_system_admin_screen_path(screen) %>
+          <%= link_to "削除", [:system_admin, screen], method: :delete,
+                    data: { confirm: "本当に削除しますか？" }%>        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
