@@ -34,4 +34,10 @@ class Seat < ApplicationRecord
           end
         end
       end
+      
+    def reserved?(schedule)
+        reservation_details.joins(:reservation)
+                           .where(reservations: { schedule_id: schedule.id })
+                           .exists?
     end
+end
