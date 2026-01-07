@@ -1,0 +1,32 @@
+<h1>座席選択: <%= @schedule.movie.title %></h1>
+<p>上映開始: <%= @schedule.screened_at.strftime("%Y-%m-%d %H:%M") %></p>
+
+<%= form_with(model: [@schedule, @reservation], local: true) do |f| %>
+
+  <div class="seat-selection">
+    <% @seats.group_by(&:queue).each do |queue, seats_in_row| %>
+      <div class="seat-row">
+        <%= queue %>行:
+        
+        <% seats_in_row.each do |seat| %>
+          <label class="seat-label">
+            <% is_reserved = seat.reserved?(@schedule) %>
+            
+            <%= check_box_tag "seat_ids[]", seat.id, false, 
+                disabled: is_reserved, 
+                class: "seat-check" 
+            %>
+            <span class="<%= 'reserved' if is_reserved %>">
+              <%= seat.verse %>
+            </span>
+          </label>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="actions" style="margin-top: 20px;">
+    <%= f.submit "選択した座席を予約する", class: "btn-primary" %>
+  </div>
+<% end %>
+

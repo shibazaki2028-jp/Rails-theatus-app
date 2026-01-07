@@ -1,6 +1,8 @@
 class Seat < ApplicationRecord
     belongs_to :screen
 
+    has_many :reservation_details, dependent: :destroy
+
     validates :verse, presence: true
     validates :queue, presence: true,
         uniqueness: { scope: [:screen_id, :verse] }

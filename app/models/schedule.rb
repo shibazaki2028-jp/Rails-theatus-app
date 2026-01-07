@@ -9,7 +9,7 @@ class Schedule < ApplicationRecord
     validates :screened_at, presence: true
     validates :ended_at, presence: true
 
-    validates :schedule_overlap
+    validate :schedule_overlap
 
     before_validation :set_ended_at
 

@@ -27,7 +27,7 @@ class ReservationsController < ApplicationController
     end
 
     def set_schedule
-        @reservation = Schedule.find(params[:schedule_id])
+        @schedule = Schedule.find(params[:schedule_id])
     end
         
 end
