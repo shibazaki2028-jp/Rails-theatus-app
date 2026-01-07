@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   #上映スケジュールのidを予約画面へ渡すための導線
   resources :schedules, only: [] do
-    resources :reservations, only: [:new, :create]
+    resources :reservations, only: [:new, :create, :show]
   end
 
   resources :reservations
@@ -39,7 +39,7 @@ Rails.application.routes.draw do
     end
     resources :prices #料金マスタ(priceテーブル)
     resources :schedules #各映画館のスケジュールにアクセスできる
-    resources :reservations, only: [:index, :show, :edit, :update, :destroy]
+    resources :reservations
   end
 
   #映画館管理者の機能
@@ -50,6 +50,6 @@ Rails.application.routes.draw do
     end
     #自分の担当している映画館のスケジュール・予約のみアクセス可能
     resources :schedules 
-    resources :reservations, only: [:index, :show, :edit, :update, :destroy]
+    resources :reservations, only: [:show, :edit, :update, :destroy]
   end
 end
