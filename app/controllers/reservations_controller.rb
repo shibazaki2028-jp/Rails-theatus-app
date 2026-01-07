@@ -15,6 +15,7 @@ class ReservationsController < ApplicationController
         @reservation.account = Account.first #あとで、ログインしているアカウントを入れるように修正
         @reservation.schedule = @schedule
         
+        @reservation.save!
         params[:seat_ids].each do |seat_id|
             @reservation.reservation_details.create!(seat_id: seat_id)
         end

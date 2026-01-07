@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_05_183105) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_07_175935) do
   create_table "accounts", force: :cascade do |t|
     t.string "user_name"
     t.string "email"
-    t.string "password"
+    t.string "password_digest"
     t.integer "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -42,12 +42,12 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_05_183105) do
   end
 
   create_table "reservations", force: :cascade do |t|
-    t.integer "user_id", null: false
+    t.integer "account_id", null: false
     t.integer "schedule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_reservations_on_account_id"
     t.index ["schedule_id"], name: "index_reservations_on_schedule_id"
-    t.index ["user_id"], name: "index_reservations_on_user_id"
   end
 
   create_table "schedules", force: :cascade do |t|
@@ -88,8 +88,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_05_183105) do
 
   add_foreign_key "reservation_details", "reservations"
   add_foreign_key "reservation_details", "seats"
+  add_foreign_key "reservations", "accounts"
   add_foreign_key "reservations", "schedules"
-  add_foreign_key "reservations", "users"
   add_foreign_key "schedules", "movies"
   add_foreign_key "schedules", "screens"
 end
