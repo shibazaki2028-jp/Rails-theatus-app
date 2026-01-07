@@ -52,4 +52,8 @@ Rails.application.routes.draw do
     resources :schedules 
     resources :reservations, only: [:show, :edit, :update, :destroy]
   end
+
+  #セッション(ログイン)のルーティング
+  resource :session, only: [:new, :create, :destroy]
+
 end
