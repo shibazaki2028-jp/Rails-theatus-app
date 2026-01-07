@@ -21,7 +21,7 @@ class ReservationsController < ApplicationController
         end
 
         if @reservation.save
-            redirect_to schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
+            redirect_to system_admin_movies_path#schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
         else
             render "new"
         end
