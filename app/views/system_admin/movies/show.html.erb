@@ -33,3 +33,12 @@
     <td><%= @movie.publish ? "○" : "－" %></td>
   </tr>
 </table>
+
+<%= link_to "上映スケジュール登録", system_admin_movies_path %>
+
+<% @schedules.group_by { |s| s.screened_at.to_date }.each do |date, schedules_on_date| %>
+  <h3><%= date %></h3>
+  <% schedules_on_date.each do |schedule| %>
+    <%= link_to "#{schedule.screened_at.strftime('%H:%M')}〜", new_reservation_path(schedule_id: schedule.id), class: "button" %>
+  <% end %>
+<% end %>

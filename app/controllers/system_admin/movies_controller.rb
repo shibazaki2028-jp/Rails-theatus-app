@@ -10,6 +10,8 @@ class SystemAdmin::MoviesController < ApplicationController
     #詳細表示
     def show 
         @movie = Movie.find(params[:id])
+
+        @schedules = @movie.schedules.order(:screened_at)
     end
 
     #新規登録フォーム

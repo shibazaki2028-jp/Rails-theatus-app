@@ -6,6 +6,7 @@ class SystemAdmin::TheatersController < ApplicationController
 
     def show
         @theater = Theater.find(params[:id])
+        @schedules = Schedule.where(screen_id: @theater.screen_ids).includes(:movie)
     end
 
     def new
