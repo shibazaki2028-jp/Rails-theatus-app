@@ -1,4 +1,5 @@
 class Movie < ApplicationRecord
+  has_many :schedules
   validates :title, presence: true
   validates :category, presence: true
   validates :published_on, presence: true

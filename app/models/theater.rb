@@ -1,5 +1,6 @@
 class Theater < ApplicationRecord
     has_many :screens, dependent: :destroy
+    has_many :schedules
 
     before_validation :normalize_telephone
 
