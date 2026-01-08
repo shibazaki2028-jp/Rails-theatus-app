@@ -40,6 +40,10 @@
             <li class="user-info">
               <span>ようこそ、<%= current_account.user_name %> さん</span>
             </li>
+            <% if current_account.admin? || current_account.system_admin? %>
+              <%= link_to "【管理】映画登録", admin_movies_path %>
+              <%= link_to "【管理】シアター設定", admin_theaters_path %>
+            <% end %>
             <li><%= link_to "マイページ", account_path(current_account) %></li>
             <li><%= link_to "ログアウト", session_path, data: { turbo_method: :delete }, class: "logout-btn" %></li>
           <% else %>
