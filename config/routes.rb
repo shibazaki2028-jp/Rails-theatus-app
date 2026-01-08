@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   end
 
   resources :reservations
-  resource :account
+  resources :accounts
   resource :password, only: [:show, :edit, :update]
   resource :session, only: [:new, :create, :destroy]
 
