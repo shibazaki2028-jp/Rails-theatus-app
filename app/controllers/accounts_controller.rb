@@ -5,6 +5,7 @@ class AccountsController < ApplicationController
 
   def create
     @account = Account.new(params[:account])
+    @account.role = :general
     if @account.save
       redirect_to root_path, notice: "アカウントを登録しました"
     else

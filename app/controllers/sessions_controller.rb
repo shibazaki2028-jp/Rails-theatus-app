@@ -1,7 +1,7 @@
 # app/controllers/sessions_controller.rb
 class SessionsController < ApplicationController
     def new
-      account = Account.new
+      @account = Account.new
     end
   
     def create
@@ -11,10 +11,11 @@ class SessionsController < ApplicationController
                 value: account.id,
                 expires: 1.day.from_now
             }
+            redirect_to :root
         else
             flash.alert = "名前とパスワードが一致しません"
+            render :new
         end
-        redirect_to :root
     end
 
     def destroy
