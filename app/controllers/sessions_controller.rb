@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
     end
   
     def create
-        account = Account.find_by(name: params[:name])
+        account = Account.find_by(user_name: params[:name])
         if account&.authenticate(params[:password])
             cookies.signed[:account_id] = {
                 value: account.id,

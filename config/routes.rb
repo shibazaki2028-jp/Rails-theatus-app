@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resources :reservations
   resource :account
   resource :password, only: [:show, :edit, :update]
-  resource :session, only: [:create, :destroy]
+  resource :session, only: [:new, :create, :destroy]
 
   #システム管理者の機能
   namespace :system_admin do
