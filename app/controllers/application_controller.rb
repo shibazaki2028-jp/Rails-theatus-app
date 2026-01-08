@@ -28,3 +28,4 @@ class ApplicationController < ActionController::Base
     def handle_login_required
     redirect_to login_path, alert: "権限がないか、ログインが必要です"
     end
+end

@@ -1,0 +1,34 @@
+<% @page_title = "会員登録" %>
+
+<h1><%= @page_title %></h1>
+
+<%= form_with(model: @account) do |f| %>
+
+  <div>
+    <%= f.label :user_name %>
+    <%= f.text_field :user_name %>
+  </div>
+
+  <div>
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+
+  <div>
+    <%= f.label :password %>
+    <%= f.text_field :password %>
+  </div>
+
+  <div>
+    <%= f.radio_button :role, 0 %>
+    <%= f.label :role_1, "システム管理者" %>
+    <%= f.radio_button :role, 1 %>
+    <%= f.label :role_2, "映画館管理者" %>
+    <%= f.radio_button :role, 2 %>
+    <%= f.label :role_3, "一般会員" %>
+  </div>
+
+  <%= f.submit "登録する" %>
+<% end %>
+
+<%= link_to "既にアカウントをお持ちの方（ログイン）", new_session_path %>

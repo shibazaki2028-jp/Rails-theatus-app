@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   #システム管理者の機能
   namespace :system_admin do
     root "top#index"
-    resources :members do
+    resources :accounts do
       get "search", on: :collection
       resources :reservations
     end
