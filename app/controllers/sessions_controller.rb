@@ -1,7 +1,7 @@
 # app/controllers/sessions_controller.rb
 class SessionsController < ApplicationController
     def new
-      # ログインフォーム表示
+      account = Account.new
     end
   
     def create

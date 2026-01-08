@@ -1,0 +1,29 @@
+<h1>シアター予約システムへようこそ</h1>
+
+<section class="auth-status">
+  <% if logged_in? %>
+    <p>ようこそ、<strong><%= current_account.email %></strong> さん</p>
+    <%= link_to "ログアウト", destroy_session_path, data: { "turbo-method": :delete }, class: "nav-link" %>
+  <% else %>
+    <p>ログインして予約を始めましょう</p>
+    <%= link_to "ログイン", new_session_path, class: "button" %>
+  <% end %>
+</section>
+
+<hr>
+
+<h2>公開中の映画</h2>
+<div class="movie-grid">
+  <% if @movies.any? %>
+    <% @movies.each do |movie| %>
+      <div class="movie-card" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <h3><%= movie.title %></h3>
+        <p>カテゴリ: <%= movie.category %></p>
+        <p>上映時間: <%= movie.screening_time %>分</p>
+        <%= link_to "詳細・スケジュールを見る", show_movie_path(movie), class: "button-primary" %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>現在、公開中の映画はありません。</p>
+  <% end %>
+</div>
