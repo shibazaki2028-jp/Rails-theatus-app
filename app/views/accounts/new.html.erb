@@ -1,7 +1,9 @@
-<% @page_title = "ログインフォーム" %>
+<% @page_title = "会員登録" %>
+
 <h1><%= @page_title %></h1>
 
-<%= form_with(scope: :session, url: session_path) do |f| %>
+<%= form_with(model: @account) do |f| %>
+
   <div>
     <%= f.label :user_name %>
     <%= f.text_field :user_name %>
@@ -17,5 +19,7 @@
     <%= f.text_field :password %>
   </div>
 
-  <%= f.submit "ログイン" %>
+  <%= f.submit "登録する" %>
 <% end %>
+
+<%= link_to "既にアカウントをお持ちの方（ログイン）", login_path %>
