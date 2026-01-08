@@ -20,7 +20,7 @@
         <h3><%= movie.title %></h3>
         <p>カテゴリ: <%= movie.category %></p>
         <p>上映時間: <%= movie.screening_time %>分</p>
-        <%= link_to "詳細・スケジュールを見る", show_movie_path(movie), class: "button-primary" %>
+        <%= link_to "詳細・スケジュールを見る", movie_path(movie), class: "button-primary" %>
       </div>
     <% end %>
   <% else %>
