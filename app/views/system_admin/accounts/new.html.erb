@@ -20,12 +20,12 @@
   </div>
 
   <div>
-    <%= f.radio_button :role, 0 %>
-    <%= f.label :role_1, "システム管理者" %>
-    <%= f.radio_button :role, 1 %>
-    <%= f.label :role_2, "映画館管理者" %>
-    <%= f.radio_button :role, 2 %>
-    <%= f.label :role_3, "一般会員" %>
+    <%= f.radio_button :role, "system_admin" %>
+    <%= f.label :role_0, "システム管理者" %>
+    <%= f.radio_button :role, "theater_admin" %>
+    <%= f.label :role_1, "映画館管理者" %>
+    <%= f.radio_button :role, "general" %>
+    <%= f.label :role_2, "一般会員" %>
   </div>
 
   <%= f.submit "登録する" %>

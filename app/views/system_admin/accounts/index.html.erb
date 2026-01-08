@@ -1,0 +1,29 @@
+<% @page_title = "アカウント管理(システム管理者)" %>
+<h1><%= @page_title %></h1>
+
+<%= link_to "新規アカウント登録", new_system_admin_account_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>ユーザー名</th>
+      <th>メールアドレス</th>
+      <th>権限</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @accounts.each do |account| %>
+      <tr>
+        <td><%= account.user_name %></td>
+        <td><%= account.email %></td>
+        <td><%= account.role %></td>
+        <td>
+          <%= link_to "詳細", system_admin_account_path(account) %>
+          <%= link_to "編集", edit_system_admin_account_path(account) %>
+          <%= link_to "削除", [:system_admin, account], method: :delete,
+                    data: { confirm: "本当に削除しますか？" }%>        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
