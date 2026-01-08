@@ -1,0 +1,25 @@
+<% @page_title = "映画一覧" %>
+<h1><%= @page_title %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>タイトル</th>
+      <th>カテゴリ</th>
+      <th>上映時間</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @movies.each do |movie| %>
+      <tr>
+        <td><%= movie.title %></td>
+        <td><%= movie.category %></td>
+        <td><%= movie.screening_time %>分</td>
+        <td>
+          <%= link_to "詳細", movie_path(movie) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

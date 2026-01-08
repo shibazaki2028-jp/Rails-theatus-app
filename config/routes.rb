@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root "top#index"
 
-  resources :movies, only: [:iudex, :show] do
+  resources :movies, only: [:index, :show] do
     get "search", on: :collection #映画検索
     #映画から上映スケジュールを探す導線
     resources :schedules, only: [:index]
