@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html>
   <head>
     <title>Theatus</title>
@@ -12,5 +12,52 @@
 
   <body>
     <%= yield %>
+  </body>
+</html>!-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Theatus - 映画予約システム</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <header class="main-header">
+      <div class="header-logo">
+        <%= link_to "Theatus", :root %>
+      </div>
+
+      <nav class="header-nav">
+        <ul>
+          <li><%= link_to "映画一覧", system_admin_movies_path %></li>
+          <li><%= link_to "劇場案内", system_admin_theaters_path %></li>
+          
+          <% if logged_in? %>
+            <%# ログインしている時の表示 %>
+            <li class="user-info">
+              <span>ようこそ、<%= current_account.user_name %> さん</span>
+            </li>
+            <li><%= link_to "マイページ", account_path(current_account) %></li>
+            <li><%= link_to "ログアウト", session_path, data: { turbo_method: :delete }, class: "logout-btn" %></li>
+          <% else %>
+            <%# ログインしていない時の表示 %>
+            <li><%= link_to "新規登録", new_account_path %></li>
+            <li><%= link_to "ログイン", new_session_path, class: "login-btn" %></li>
+          <% end %>
+        </ul>
+      </nav>
+    </header>
+
+    <%# フラッシュメッセージの表示エリア（前回提案分） %>
+    <% if flash[:notice] %>
+      <div class="flash notice"><%= flash[:notice] %></div>
+    <% end %>
+
+    <main>
+      <%= yield %>
+    </main>
   </body>
 </html>
