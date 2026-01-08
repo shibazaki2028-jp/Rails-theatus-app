@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     end
 
     def authenticate_admin!
-        unless current_account&.admin? || current_account&.system_admin?
+        unless current_account&.theater_admin? || current_account&.system_admin?
             raise LoginRequired 
         end
     end
