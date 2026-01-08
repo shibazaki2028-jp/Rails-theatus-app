@@ -1,5 +1,6 @@
 class SystemAdmin::ScreensController < ApplicationController
     before_action :set_theater_id
+    before_action :authenticate_admin!
 
     def index
         @screens = @theater.screens

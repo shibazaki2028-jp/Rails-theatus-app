@@ -1,4 +1,5 @@
 class SystemAdmin::TheatersController < ApplicationController
+    before_action :authenticate_admin!
 
     def index
         @theaters = Theater.all

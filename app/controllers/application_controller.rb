@@ -10,4 +10,21 @@ class ApplicationController < ActionController::Base
     def logged_in?
         current_account.present?
     end
-end
+
+    def authenticate_admin!
+        unless current_account&.admin? || current_account&.system_admin?
+            raise LoginRequired 
+        end
+    end
+    
+    def authenticate_system_admin!
+        raise LoginRequired unless current_account&.system_admin?
+    end
+
+    class LoginRequired < StandardError; end
+
+    rescue_from LoginRequired, with: :handle_login_required
+
+    def handle_login_required
+    redirect_to login_path, alert: "権限がないか、ログインが必要です"
+    end

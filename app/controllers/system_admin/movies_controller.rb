@@ -1,5 +1,5 @@
 class SystemAdmin::MoviesController < ApplicationController
-    before_action :permit_all_parameters
+    before_action :authenticate_admin!
 
 
     #一覧表示
@@ -51,10 +51,4 @@ class SystemAdmin::MoviesController < ApplicationController
         @movie.destroy
         redirect_to system_admin_movies_path, notice: "映画の削除が完了しました。"
     end
-    private
-  
-    def permit_all_parameters
-      params.permit!
-    end
-  
 end
