@@ -1,0 +1,31 @@
+<% @page_title = "予約一覧" %>
+<h1><%= @page_title %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>上映日</th>
+      <th>開始時間</th>
+      <th>映画タイトル</th>
+      <th>映画館 / スクリーン</th>
+      <th>座席</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @schedules.each do |schedule| %>
+      <tr>
+        <td><%= schedule.screened_at.strftime("%Y/%m/%d") %></td>
+        <td><%= schedule.screened_at.strftime("%H:%M") %></td>
+        
+        <td>*<%= schedule.movie.title %>*</td>
+        <td><%= schedule.theater.name %>（<%= schedule.screen_id %>）</td>
+                
+        <td>
+          <%= link_to "詳細確認", schedule_reservation_path(schedule, schedule), class: "button" %>
+          
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

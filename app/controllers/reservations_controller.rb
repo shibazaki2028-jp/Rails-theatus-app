@@ -1,6 +1,11 @@
 class ReservationsController < ApplicationController
-    before_action :set_schedule
+    before_action :set_schedule, only: [:edit, :update, :destroy, :new, :create]
     before_action :logged_in?
+
+    def index
+        @schedules = Schedule.all
+        @reservations = current_account.reservations
+    end
 
     def show
         @reservation = Reservation.find(params[:id])
