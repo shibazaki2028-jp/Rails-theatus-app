@@ -1,4 +1,6 @@
 <h1>座席選択: <%= @schedule.movie.title %></h1>
+<p>映画館：<%= @schedule.theater.name %></p>
+<p>スクリーン：<%= @schedule.screen.info %></p>
 <p>上映開始: <%= @schedule.screened_at.strftime("%Y-%m-%d %H:%M") %></p>
 
 <%= form_with(model: [@schedule, @reservation], local: true) do |f| %>
