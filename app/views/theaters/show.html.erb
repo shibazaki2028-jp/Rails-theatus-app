@@ -1,0 +1,27 @@
+<% @page_title = "映画館の詳細" %>
+<h1><%= @page_title %></h1>
+
+<%= link_to "映画館一覧", theaters_path %>
+
+<table class="attr">
+  <tr>
+    <th width="150">映画館名</th>
+    <td><%= @theater.name %></td>
+  </tr>
+  <tr>
+    <th>住所</th>
+    <td><%= @theater.address %></td>
+  </tr>
+  <tr>
+    <th>電話番号</th>
+    <td><%= @theater.formatted_telephone %></td>
+  </tr>
+</table>
+
+
+<% @schedules.group_by { |s| s.screened_at.to_date }.each do |date, schedules_on_date| %>
+  <h3><%= date %></h3>
+  <% schedules_on_date.each do |schedule| %>
+    <%= link_to "#{schedule.screened_at.strftime('%H:%M')}〜", new_reservation_path(schedule_id: schedule.id), class: "button" %>
+  <% end %>
+<% end %>
