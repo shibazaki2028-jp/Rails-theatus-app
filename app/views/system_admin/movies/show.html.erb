@@ -34,7 +34,7 @@
   </tr>
 </table>
 
-<%= link_to "上映スケジュール登録", system_admin_movies_path %>
+<%= link_to "上映スケジュール登録", new_system_admin_schedule_path %>
 
 <% @schedules.group_by { |s| s.screened_at.to_date }.each do |date, schedules_on_date| %>
   <h3><%= date %></h3>

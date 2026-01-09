@@ -18,8 +18,10 @@
         <td>
           <!-- <%= link_to "詳細", system_admin_theater_screen_path(@theater, screen) %> -->
           <%= link_to "編集", edit_system_admin_theater_screen_path(@theater, screen) %>
-          <%= link_to "削除", [:system_admin, @theater, screen], method: :delete,
-                    data: { confirm: "本当に削除しますか？" }%>        </td>
+          <%= button_to "削除", system_admin_theater_screen_path(@theater, screen),
+                method: :delete,
+                data: { confirm: "本当に削除しますか？", turbo_confirm: "本当に削除しますか？" },
+                class: "delete-button" %>
       </tr>
     <% end %>
   </tbody>
