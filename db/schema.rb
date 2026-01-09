@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_07_202044) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_09_083350) do
   create_table "accounts", force: :cascade do |t|
     t.string "user_name", null: false
     t.string "email", null: false
@@ -28,6 +28,13 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_07_202044) do
     t.date "published_on", null: false
     t.date "ended_on", null: false
     t.integer "screening_time", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "prices", force: :cascade do |t|
+    t.integer "ticket_type", null: false
+    t.integer "price", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
