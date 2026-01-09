@@ -9,6 +9,7 @@ class ReservationsController < ApplicationController
 
     def show
         @reservation = Reservation.find(params[:id])
+        @schedule = Schedule.find(params[:id])
     end
 
     def new

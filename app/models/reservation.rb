@@ -4,6 +4,8 @@ class Reservation < ApplicationRecord
 
   has_many :reservation_details, dependent: :destroy
 
+  has_many :seats, through: :reservation_details
+
   validates :account_id, presence: true
   validates :schedule_id, presence: true
 end

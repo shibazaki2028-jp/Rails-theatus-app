@@ -1,0 +1,12 @@
+<h1>予約詳細</h1>
+
+<p>映画タイトル: <%= @schedule.movie.title %></p>
+<p>上映開始: <%= @schedule.screened_at.strftime("%H:%M") %></p>
+<p>座席: 
+  <% if @schedule.seats.any? %>
+    <%= @schedule.seats.map(&:seat_name).join(", ") %>
+  <% else %>
+    予約された座席はありません
+  <% end %>
+</p>
+<%= link_to "一覧に戻る", reservations_path %>

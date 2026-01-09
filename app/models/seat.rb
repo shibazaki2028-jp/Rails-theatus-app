@@ -36,6 +36,10 @@ class Seat < ApplicationRecord
           end
         end
       end
+
+      def seat_name
+        "#{queue}-#{verse}"
+      end
       
     def reserved?(schedule)
         reservation_details.joins(:reservation)
