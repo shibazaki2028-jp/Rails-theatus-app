@@ -1,0 +1,31 @@
+<% @page_title = "上映スケジュール編集" %>
+<h1><%= @page_title %></h1>
+<% if @schedule.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= @schedule.errors.count %>件のエラーが発生しました:</h2>
+    <ul>
+      <% @schedule.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with(model: [:system_admin, @schedule]) do |f| %>
+  <div>
+    <%= f.label :movie_id, "映画タイトル" %>
+    <%= f.collection_select :movie_id, Movie.all, :id, :title, prompt: "映画を選択してください" %>
+  </div>
+
+  <div>
+    <%= f.label :screen_id, "スクリーン" %>
+    <%= f.collection_select :screen_id, Screen.all, :id, :info, prompt: "映画館を選択してください" %>
+  </div>
+
+  <div>
+    <%= f.label :screened_at, "上映開始時間" %>
+    <%= f.datetime_field :screened_at %>
+  </div>
+
+  <%= f.submit "スケジュールを公開する" %>
+<% end %>

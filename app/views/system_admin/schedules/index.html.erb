@@ -1,0 +1,36 @@
+<h1>上映スケジュール一覧</h1>
+
+<%= link_to "新規スケジュール登録", new_system_admin_schedule_path, class: "btn-new" %>
+
+<% @schedules_by_movie.each do |movie, schedules| %>
+  <section class="movie-schedule-group">
+    <h2><%= movie.title %></h2>
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>スクリーン</th>
+          <th>映画館</th>
+          <th>上映開始</th>
+          <th>上映終了</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% schedules.each do |schedule| %>
+          <tr>
+            <td><%= schedule.screen.info %></td>
+            <td><%= schedule.screen.theater.name %></td>
+            <td><%= schedule.screened_at.strftime("%Y/%m/%d %H:%M") %></td>
+            <td><%= schedule.ended_at.strftime("%H:%M") %></td>
+            <td>
+              <%= link_to "編集", edit_system_admin_schedule_path(schedule) %>
+              <%= link_to "削除", [:system_admin, @screen, schedule], method: :delete,
+                    data: { confirm: "本当に削除しますか？" }%>        
+            </td>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+<% end %>
