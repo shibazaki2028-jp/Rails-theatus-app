@@ -1,6 +1,4 @@
 class MoviesController < ApplicationController
-    before_action :logged_in?
-
     #一覧表示
     def index 
         @movies = Movie.all

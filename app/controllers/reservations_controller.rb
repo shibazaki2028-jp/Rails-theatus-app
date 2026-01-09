@@ -1,5 +1,6 @@
 class ReservationsController < ApplicationController
     before_action :set_schedule
+    before_action :logged_in?
 
     def show
         @reservation = Reservation.find(params[:id])
