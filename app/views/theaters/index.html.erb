@@ -1,0 +1,25 @@
+<% @page_title = "映画館一覧" %>
+<h1><%= @page_title %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>映画館名</th>
+      <th>住所</th>
+      <th>電話番号</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @theaters.each do |theater| %>
+      <tr>
+        <td><%= theater.name %></td>
+        <td><%= theater.address %></td>
+        <td><%= theater.formatted_telephone %></td>
+        <td>
+          <%= link_to "詳細", system_admin_theater_path(theater) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
