@@ -1,0 +1,19 @@
+<% @page_title = "マイページ" %>
+
+<h1><%= @page_title %></h1>
+
+<table class="attr">
+  <tr>
+    <th>ユーザー名</th>
+    <td><%= @account.user_name %></td>
+  </tr>
+  <tr>
+    <th>メールアドレス</th>
+    <td><%= @account.email %></td>
+  </tr>
+</table
+>
+<ul class="toolbar">
+  <%= link_to "アカウント情報の編集", :edit_account %>
+  <%= link_to "パスワードの変更", :edit_password %>
+</ul>
