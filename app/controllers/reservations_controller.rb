@@ -15,6 +15,9 @@ class ReservationsController < ApplicationController
     def new
         @reservation = Reservation.new
         @seats = @schedule.screen.seats.all
+
+        @reservation_details = @reservation.reservation_details.build        
+        @prices = Price.all
     end
 
     def create

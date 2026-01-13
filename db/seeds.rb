@@ -5,3 +5,8 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+Price.create!([
+    { name: "一般", value: 2000, category: "default" },
+    { name: "学生", value: 1500, category: "student" }
+  ])
