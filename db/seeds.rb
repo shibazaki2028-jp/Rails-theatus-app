@@ -7,6 +7,6 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 Price.create!([
-    { name: "一般", value: 2000, category: "default" },
-    { name: "学生", value: 1500, category: "student" }
+    { ticket_type: "一般", price: 2000},
+    { ticket_type: "学生", price: 1500}
   ])

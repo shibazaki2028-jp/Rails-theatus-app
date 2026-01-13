@@ -22,9 +22,20 @@ class ReservationsController < ApplicationController
 
     def create
         @reservation = Reservation.new(params[:reservation])
-        @reservation.account = Account.first #あとで、ログインしているアカウントを入れるように修正
+        @reservation.account = current_account
         @reservation.schedule = @schedule
         
+        if params[:seat_ids].present?
+            params[:seat_ids].each do |seat_id|
+              price_id = params[:prices][seat_id]
+              
+              @reservation.reservation_details.build(
+                seat_id: seat_id,
+                price_id: price_id
+              )
+            end
+          end
+
         @reservation.save!
         params[:seat_ids].each do |seat_id|
             @reservation.reservation_details.create!(seat_id: seat_id)
@@ -33,6 +44,8 @@ class ReservationsController < ApplicationController
         if @reservation.save
             redirect_to :root#schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
         else
+            @schedule = Schedule.find(params[:reservation][:schedule_id])
+            @prices = Price.all
             render "new"
         end
     end
