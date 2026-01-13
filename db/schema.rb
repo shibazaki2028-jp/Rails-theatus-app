@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_13_191326) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_13_194731) do
   create_table "accounts", force: :cascade do |t|
     t.string "user_name", null: false
     t.string "email", null: false
@@ -44,6 +44,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_13_191326) do
     t.integer "seat_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "price_id", null: false
+    t.index ["price_id"], name: "index_reservation_details_on_price_id"
     t.index ["reservation_id"], name: "index_reservation_details_on_reservation_id"
     t.index ["seat_id"], name: "index_reservation_details_on_seat_id"
   end
@@ -93,6 +95,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_13_191326) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "reservation_details", "prices"
   add_foreign_key "reservation_details", "reservations"
   add_foreign_key "reservation_details", "seats"
   add_foreign_key "reservations", "accounts"

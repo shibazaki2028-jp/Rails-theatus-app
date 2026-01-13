@@ -34,12 +34,14 @@ class ReservationsController < ApplicationController
                 price_id: price_id
               )
             end
-          end
-
-        @reservation.save!
-        params[:seat_ids].each do |seat_id|
-            @reservation.reservation_details.create!(seat_id: seat_id)
         end
+        @reservation.reservation_details.each(&:valid?) 
+
+        # 2. その結果を表示する（これでターミナルに原因が出るようになります）
+        p "デバッグ: 予約詳細のエラー内容 -> #{@reservation.reservation_details.map { |d| d.errors.full_messages }}"
+    
+        # 3. 保存を実行
+        @reservation.save!
 
         if @reservation.save
             redirect_to :root#schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"

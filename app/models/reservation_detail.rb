@@ -1,8 +1,8 @@
 class ReservationDetail < ApplicationRecord
-  belongs_to :reservation
+  belongs_to :reservation, optional: true
   belongs_to :seat
+  belongs_to :price
 
-  validates :reservation_id, presence: true
   validates :seat_id, presence: true
   
 end
