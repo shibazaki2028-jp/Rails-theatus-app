@@ -4,12 +4,12 @@ class ReservationsController < ApplicationController
 
     def index
         @schedules = Schedule.all
-        @reservations = current_account.reservations
+        @reservations = current_account.reservations.order(created_at: :desc)
     end
 
     def show
         @reservation = Reservation.find(params[:id])
-        @schedule = Schedule.find(params[:id])
+        @schedule = @reservation.schedule
     end
 
     def new

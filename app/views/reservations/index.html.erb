@@ -13,16 +13,16 @@
     </tr>
   </thead>
   <tbody>
-    <% @schedules.each do |schedule| %>
+    <% @reservations.each do |reservation| %>
       <tr>
-        <td><%= schedule.screened_at.strftime("%Y/%m/%d") %></td>
-        <td><%= schedule.screened_at.strftime("%H:%M") %></td>
+        <td><%= reservation.schedule.screened_at.strftime("%Y/%m/%d") %></td>
+        <td><%= reservation.schedule.screened_at.strftime("%H:%M") %></td>
         
-        <td>*<%= schedule.movie.title %>*</td>
-        <td><%= schedule.theater.name %>（<%= schedule.screen_id %>）</td>
+        <td>*<%= reservation.schedule.movie.title %>*</td>
+        <td><%= reservation.schedule.theater.name %>（<%= reservation.schedule.screen_id %>）</td>
                 
         <td>
-          <%= link_to "詳細確認", schedule_reservation_path(schedule, schedule), class: "button" %>
+          <%= link_to "詳細確認", reservation_path(reservation), class: "button" %>
           
         </td>
       </tr>
