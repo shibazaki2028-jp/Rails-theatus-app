@@ -1,10 +1,12 @@
 <h1>Theatus</h1>
 
 <section class="auth-status">
-  <% if logged_in? %>
+  <% if current_account %>
     <p>ようこそ、<strong><%= current_account.user_name %></strong> さん</p>
-    <%= link_to "ログアウト", session_path, data: { "turbo-method": :delete }, class: "nav-link" %>
-  <% else %>
+<%= button_to "ログアウト", session_path, 
+        method: :delete, 
+        data: { confirm: "ログアウトしますか？" },
+        class: "button" %>  <% else %>
     <%= link_to "ログイン", new_session_path, class: "button" %>
   <% end %>
 </section>

@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
-    before_action :set_reservation, only: [:edit, :update, :destroy, :new, :create]
-    before_action :set_schedule, only: [:edit, :update, :destroy, :new, :create]
+    before_action :set_reservation, only: [:show, :edit, :update, :destroy]
+    before_action :set_schedule, only: [:new, :create, :edit, :update, :destroy]
     before_action :logged_in?
 
     def index
@@ -69,7 +69,11 @@ class ReservationsController < ApplicationController
     end
 
     def set_schedule
-        @schedule = @reservation.schedule
+        if params[:schedule_id]
+            @schedule = Schedule.find(params[:schedule_id])
+        elsif @reservation
+            @schedule = @reservation.schedule
+        end
     end
         
 end

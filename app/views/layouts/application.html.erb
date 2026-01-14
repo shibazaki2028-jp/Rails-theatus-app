@@ -19,7 +19,7 @@
           <li><%= link_to "映画一覧", movies_path %></li>
           <li><%= link_to "劇場案内", theaters_path %></li>
           
-          <% if logged_in? %>
+          <% if current_account %>
             <%# ログインしている時の表示 %>
             <li class="user-info">
               <span>ようこそ、<%= current_account.user_name %> さん</span>
