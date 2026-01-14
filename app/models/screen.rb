@@ -6,16 +6,13 @@ class Screen < ApplicationRecord
     validates :info, presence: true
   after_create :generate_default_seats
 
+  def theater_and_screen_name
+    "#{theater.name} - #{info} (ID: #{id})"
+  end
+
   private
 
   def generate_default_seats
-    ("A".."E").each do |row_name|
-      (1..10).each do |num|
-        seats.create!(
-          queue: row_name,
-          verse: num
-        )
-      end
-    end
+    Seat.generate_for(self)
   end
 end

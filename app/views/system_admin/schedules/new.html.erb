@@ -19,7 +19,8 @@
 
   <div>
     <%= f.label :screen_id, "スクリーン" %>
-    <%= f.collection_select :screen_id, Screen.all, :id, :info, prompt: "映画館を選択してください" %>
+        <%= f.collection_select :screen_id, Screen.all, :id, :theater_and_screen_name, 
+        { include_blank: "選択してください" }, { class: "form-control" } %>
   </div>
 
   <div>

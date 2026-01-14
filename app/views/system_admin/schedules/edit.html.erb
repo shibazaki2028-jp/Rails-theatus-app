@@ -19,9 +19,8 @@
 
   <div>
     <%= f.label :screen_id, "スクリーン" %>
-    <%= f.collection_select :screen_id, Screen.all, :id, :info, prompt: "映画館を選択してください" %>
-  </div>
-
+    <%= f.collection_select :screen_id, Screen.all, :id, :theater_and_screen_name, 
+        { include_blank: "選択してください" }, { class: "form-control" } %>
   <div>
     <%= f.label :screened_at, "上映開始時間" %>
     <%= f.datetime_field :screened_at %>

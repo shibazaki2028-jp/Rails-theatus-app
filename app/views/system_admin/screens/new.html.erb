@@ -7,8 +7,12 @@
   <table class = "form-table">
     <tbody>
     <tr>
-        <th><%= form.label :info,  "座席情報" %></th>
-        <td><%= form.text_field :info %></td>
+        <th><%= form.label :info,  "スクリーンタイプ" %></th>
+        <%= form.select :info, [
+        ["スタンダード", "standard"],
+        ["ラージ", "large"],
+        ["スモール", "small"]],
+        { include_blank: "選択してください" }, { class: "form-control" } %>    
     </tr>
     </tbody>
   </table>
