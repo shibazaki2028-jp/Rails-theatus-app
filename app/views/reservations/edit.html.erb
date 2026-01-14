@@ -1,0 +1,48 @@
+<h1>座席選択: <%= @schedule.movie.title %></h1>
+<p>映画館：<%= @schedule.theater.name %></p>
+<p>スクリーン：<%= @schedule.screen.info %></p>
+<p>上映開始: <%= @schedule.screened_at.strftime("%Y-%m-%d %H:%M") %></p>
+
+<div id="price-options-data" style="display: none;">
+  <%= options_from_collection_for_select(@prices, :id, :name_with_value) %>
+</div>
+
+<%= form_with(model: @reservation, local: true) do |f| %>
+<div class="seat-selection">
+  <% my_seat_ids = @reservation.reservation_details.pluck(:seat_id) %>
+
+  <% @seats.group_by(&:queue).each do |queue, seats_in_row| %>
+    <div class="seat-row">
+      <span style="width: 40px;"><%= queue %>行:</span>
+      
+      <% seats_in_row.each do |seat| %>
+        <% 
+          is_reserved_by_others = seat.reserved?(@schedule) && !my_seat_ids.include?(seat.id)
+        %>
+        
+        <label class="seat-label <%= 'reserved-by-others' if is_reserved_by_others %>">
+<%= check_box_tag "seat_ids[]", seat.id, my_seat_ids.include?(seat.id), 
+    class: "seat-check",
+    data: { 
+      seat_id: seat.id, 
+      seat_name: "#{queue}行-#{seat.verse}", # ここが JS の dataset.seatName に対応
+      initial_price_id: @reservation.reservation_details.find_by(seat_id: seat.id)&.price_id 
+    }
+%>
+          <span><%= seat.verse %></span>
+        </label>
+      <% end %>
+    </div>
+  <% end %> 
+</div>
+
+
+  <div id="selected-seats-list" class="selected-seats-container">
+    <p class="no-selection">座席を選択してください</p>
+  </div>
+
+  <div class="actions" style="margin-top: 20px;">
+    <%= f.submit "選択した座席を予約する", class: "btn-primary" %>
+  </div>
+<% end %>
+

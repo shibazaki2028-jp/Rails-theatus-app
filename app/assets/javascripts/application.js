@@ -1,41 +1,59 @@
-//= require rails-ujs
-//= require_tree . 
 document.addEventListener('DOMContentLoaded', () => {
-    const seatContainer = document.querySelector('.seat-selection');
-    const summaryList = document.getElementById('selected-seats-list');
-    const priceDataElement = document.getElementById('price-options-data');
-    
-    if (!seatContainer || !summaryList || !priceDataElement) return;
+    const seatChecks = document.querySelectorAll('.seat-check');
+    const selectedList = document.getElementById('selected-seats-list');
+    const priceOptionsHtml = document.getElementById('price-options-data').innerHTML;
   
-    const priceOptions = priceDataElement.innerHTML;
+    // 1. 座席の表示を更新するメイン関数
+    const updateSeatDisplay = (checkbox) => {
+      const seatId = checkbox.dataset.seatId;
+      const seatName = checkbox.dataset.seatName; // dataset.seatName で取得
+      const existingElement = document.getElementById(`selected-seat-${seatId}`);
   
-    seatContainer.addEventListener('change', (e) => {
-        if (e.target.classList.contains('seat-check')) {
-            const { seatId, seatName } = e.target.dataset;
+      if (checkbox.checked) {
+        if (!existingElement) {
+          // 選択リストに追加
+          const div = document.createElement('div');
+          div.id = `selected-seat-${seatId}`;
+          div.className = 'selected-seat-item';
+          
+          // 編集時：初期の price_id があればそれを選択状態にする
+          const initialPriceId = checkbox.dataset.initialPriceId;
   
-            if (e.target.checked) {
-                const itemHtml = `<div class="selected-seat-item" id="item_${seatId}" style="margin-bottom: 10px; border-top: 1px solid #eee; padding: 10px;">
-                        <strong>座席: ${seatName}</strong>
-                        <div style="margin-top: 5px;">
-                            料金種別: 
-                            <select name="prices[${seatId}]" class="price-select">
-                                ${priceOptions}
-                            </select>
-                        </div>
-                    </div>`;
-                
-                const noSelectionMsg = summaryList.querySelector('.no-selection');
-                if (noSelectionMsg) noSelectionMsg.remove();
-                
-                summaryList.insertAdjacentHTML('beforeend', itemHtml);
-            } else {
-                const item = document.getElementById(`item_${seatId}`);
-                if (item) item.remove();
-                
-                if (summaryList.children.length === 0) {
-                    summaryList.innerHTML = '<p class="no-selection">座席を選択してください</p>';
-                }
-            }
+          div.innerHTML = `
+            <strong>座席: ${seatName}</strong><br>
+            料金種別: <select name="prices[${seatId}]" class="price-select">
+              ${priceOptionsHtml}
+            </select>
+          `;
+          selectedList.appendChild(div);
+  
+          // 初期値があればセット
+          if (initialPriceId) {
+            div.querySelector('select').value = initialPriceId;
+          }
         }
+      } else {
+        if (existingElement) existingElement.remove();
+      }
+      
+      // 「座席を選択してください」の表示切り替え
+      const noSelection = selectedList.querySelector('.no-selection');
+      if (selectedList.querySelectorAll('.selected-seat-item').length > 0) {
+        if (noSelection) noSelection.style.display = 'none';
+      } else {
+        if (noSelection) noSelection.style.display = 'block';
+      }
+    };
+  
+    // 2. イベントリスナーの設定（クリック時）
+    seatChecks.forEach(check => {
+      check.addEventListener('change', () => updateSeatDisplay(check));
     });
-});
+  
+    // 3. 【重要】初期化処理：ページ読み込み時に最初からチェックされている席を処理
+    seatChecks.forEach(check => {
+      if (check.checked) {
+        updateSeatDisplay(check);
+      }
+    });
+  });
