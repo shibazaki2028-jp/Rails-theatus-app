@@ -25,7 +25,7 @@
     class: "seat-check",
     data: { 
       seat_id: seat.id, 
-      seat_name: "#{queue}行-#{seat.verse}", # ここが JS の dataset.seatName に対応
+      seat_name: "#{queue}行-#{seat.verse}",
       initial_price_id: @reservation.reservation_details.find_by(seat_id: seat.id)&.price_id 
     }
 %>

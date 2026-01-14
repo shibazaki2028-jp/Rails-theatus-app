@@ -1,0 +1,22 @@
+/* フラッシュメッセージ全体の共通スタイル */
+.flash {
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 成功通知（notice）: 緑系 */
+.flash.notice {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* 警告・エラー（alert）: 赤系 */
+.flash.alert {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
