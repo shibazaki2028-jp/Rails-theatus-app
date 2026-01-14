@@ -1,12 +1,25 @@
-<h1>予約詳細</h1>
+<% @page_title = "予約詳細" %>
+<h1><%= @page_title %></h1>
 
-<p>映画タイトル: <%= @schedule.movie.title %></p>
-<p>上映開始: <%= @schedule.screened_at.strftime("%H:%M") %></p>
-<p>座席: 
-  <% if @schedule.seats.any? %>
-    <%= @schedule.seats.map(&:seat_name).join(", ") %>
-  <% else %>
-    予約された座席はありません
-  <% end %>
-</p>
-<%= link_to "一覧に戻る", reservations_path %>
+<div class="reservation-info">
+  <p>映画タイトル: <strong><%= @schedule.movie.title %></strong></p>
+  <p>上映開始: <%= @schedule.screened_at.strftime("%H:%M") %></p>
+  <p>映画館 / スクリーン: <%= @schedule.theater.name %> / <%= @schedule.screen.info %></p>
+
+  <h3>予約内容</h3>
+  <ul>
+    <% @reservation.reservation_details.each do |detail| %>
+      <li>
+        座席: <%= detail.seat.seat_name %> 
+        (<%= detail.price.ticket_type %>: <%= detail.price.price %>円)
+      </li>
+    <% end %>
+  </ul>
+
+  <hr>
+  <p>
+    <strong>合計金額: <%= @reservation.reservation_details.joins(:price).sum(:price) %>円</strong>
+  </p>
+</div>
+
+<%= link_to "一覧に戻る", reservations_path, class: "button" %>
