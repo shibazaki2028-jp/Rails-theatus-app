@@ -14,4 +14,7 @@ class Movie < ApplicationRecord
   }
 
   validates :publish, inclusion: { in: [true, false] }
+
+  enum :category, { "アクション": 0, "コメディ": 1, "ドキュメンタリー": 2, "ロマンス": 3, "ホラー": 4 }
+
 end
