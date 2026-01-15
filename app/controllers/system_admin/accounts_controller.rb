@@ -1,10 +1,11 @@
 class SystemAdmin::AccountsController < ApplicationController
     def index
         @accounts = Account.all
+        
     end
 
     def show
-        @accoutn = Account.find_by(params[:id])
+        @account = Account.find(params[:id])
     end
 
     def new

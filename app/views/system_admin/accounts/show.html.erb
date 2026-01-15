@@ -1,0 +1,22 @@
+<% @page_title = "アカウント詳細" %>
+
+<h1><%= @page_title %></h1>
+
+<table class="attr">
+  <tr>
+    <th>ユーザー名</th>
+    <td><%= @account.user_name %></td>
+  </tr>
+  <tr>
+    <th>メールアドレス</th>
+    <td><%= @account.email %></td>
+  </tr>
+  <tr>
+    <th>役職</th>
+    <td><%= @account.role %></td>
+  </tr>
+</table>
+<ul class="toolbar">
+  <%= link_to "アカウント情報の編集", edit_account_path(@account) %>
+  <%= link_to "パスワードの変更", edit_password_path(@account) %>
+<%= link_to "予約一覧", system_admin_account_reservations_path(@account), class: "button" %></ul>
