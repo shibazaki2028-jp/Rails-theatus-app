@@ -10,6 +10,7 @@
   <%= submit_tag "検索" %>
 <% end %>
 
+<% if @movies.present? %>
 <table>
   <thead>
     <tr>
@@ -32,3 +33,6 @@
     <% end %>
   </tbody>
 </table>
+<% else %>
+  <p>ご指定の条件に一致する映画は見つかりませんでした。</p>
+<% end %>
