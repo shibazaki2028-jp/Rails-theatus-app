@@ -1,0 +1,23 @@
+<% @page_title = "会員情報編集" %>
+
+<h1><%= @page_title %></h1>
+
+<%= form_with(model: [:system_admin, @account]) do |f| %>
+
+  <div>
+    <%= f.label :user_name %>
+    <%= f.text_field :user_name %>
+  </div>
+
+  <div>
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+
+  <div>
+    <%= f.label :password %>
+    <%= f.text_field :password %>
+  </div>
+
+  <%= f.submit "登録する" %>
+<% end %>

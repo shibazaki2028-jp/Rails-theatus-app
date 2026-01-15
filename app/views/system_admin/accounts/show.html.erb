@@ -17,6 +17,5 @@
   </tr>
 </table>
 <ul class="toolbar">
-  <%= link_to "アカウント情報の編集", edit_account_path(@account) %>
-  <%= link_to "パスワードの変更", edit_password_path(@account) %>
+  <%= link_to "アカウント情報の編集", edit_system_admin_account_path(@account) %>
 <%= link_to "予約一覧", system_admin_account_reservations_path(@account), class: "button" %></ul>

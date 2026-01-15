@@ -18,11 +18,15 @@
         <td><%= account.user_name %></td>
         <td><%= account.email %></td>
         <td><%= account.role %></td>
-        <td>
+        <td style="display: flex; align-items: center; gap: 10px;">
           <%= link_to "詳細", system_admin_account_path(account) %>
           <%= link_to "編集", edit_system_admin_account_path(account) %>
-          <%= link_to "削除", [:system_admin, account], method: :delete,
-                    data: { confirm: "本当に削除しますか？" }%>        </td>
+          <%= button_to "削除", [:system_admin, account], 
+              method: :delete, 
+              onclick: "return confirm('本当に削除しますか？');",
+              form: { data: { turbo: false } }, 
+              class: "button-delete" %>
+          </td>
       </tr>
     <% end %>
   </tbody>

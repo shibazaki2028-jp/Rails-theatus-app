@@ -20,4 +20,26 @@ class SystemAdmin::AccountsController < ApplicationController
         render "new"
       end
     end
+    
+    def edit
+      @account = Account.find(params[:id])
+    end
+
+    def update
+      @account = Account.find(params[:id])
+      @account.assign_attributes(params[:account])
+      if @account.save
+        redirect_to system_admin_account_path(@account), notice: "アカウント情報を更新しました。"
+      else
+        render "edit"
+      end
+    end
+
+    def destroy
+      @account = Account.find(params[:id])
+      @account.destroy
+      redirect_to system_admin_accounts_path, notice: "会員を削除しました。"
+    end
+
+
   end
