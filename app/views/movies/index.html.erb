@@ -1,6 +1,15 @@
 <% @page_title = "映画一覧" %>
 <h1><%= @page_title %></h1>
 
+<%= form_tag :search_movies, method: :get, class: "search" do %>
+  <%= text_field_tag :title, params[:title], placeholder: "映画名" %>
+  <%= select_tag :category, 
+        options_for_select(Movie.categories.keys, params[:category]), 
+        include_blank: "未選択" %>
+  <%= text_field_tag :address, params[:address], placeholder: "住所" %>
+  <%= submit_tag "検索" %>
+<% end %>
+
 <table>
   <thead>
     <tr>

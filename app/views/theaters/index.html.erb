@@ -1,6 +1,11 @@
 <% @page_title = "映画館一覧" %>
 <h1><%= @page_title %></h1>
 
+<%= form_tag :search_theaters, method: :get, class: "search" do %>
+  <%= text_field_tag :address, params[:address], placeholder: "住所" %>
+  <%= submit_tag "検索" %>
+<% end %>
+
 <table>
   <thead>
     <tr>

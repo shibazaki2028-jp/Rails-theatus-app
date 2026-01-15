@@ -15,6 +15,23 @@ class Movie < ApplicationRecord
 
   validates :publish, inclusion: { in: [true, false] }
 
-  enum :category, { "アクション": 0, "コメディ": 1, "ドキュメンタリー": 2, "ロマンス": 3, "ホラー": 4 }
+  enum :category, { "アクション": 1, "コメディ": 2, "ドキュメンタリー": 3, "ロマンス": 4, "ホラー": 5 }
 
+  class << self
+    def search(title, category, address)
+        rel = all
+        if title.present?
+            rel = rel.where("title LIKE ? ", "%#{title}%")
+        end
+        if category.present?
+            rel = rel.where(category: category)
+        end
+        if address.present?
+            rel = rel.joins(schedules: :theater)
+            .where("theaters.address LIKE ?", "%#{address}%")
+            .distinct
+        end
+        rel
+    end
+  end
 end

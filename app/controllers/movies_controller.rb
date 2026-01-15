@@ -4,6 +4,12 @@ class MoviesController < ApplicationController
         @movies = Movie.all
     end
 
+    def search
+        @movies = Movie.search(params[:title], params[:category], params[:address])
+        #.page(params[:page]).per(15)
+        render "index"
+    end
+
     #詳細表示
     def show 
         @movie = Movie.find(params[:id])

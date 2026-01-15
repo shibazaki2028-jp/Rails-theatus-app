@@ -25,4 +25,17 @@ class Theater < ApplicationRecord
     # ハイフンを除去して保存する
     self.telephone = telephone.gsub(/[-]/, "") if telephone.present?
     end
+
+
+  class << self
+    def search(address)
+        rel = all
+        if address.present?
+            rel = rel.joins(schedules: :theater)
+            .where("theaters.address LIKE ?", "%#{address}%")
+            .distinct
+        end
+        rel
+    end
+  end
 end
