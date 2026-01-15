@@ -17,4 +17,17 @@ class TheatersController < ApplicationController
 
         @schedules = @theater.schedules.order(:screened_at)
     end
+
+    private
+
+    def permit_theater_manager
+        return if current_account.system_admin?
+
+        manager = current_account.theater_admin? && 
+                    current_account.theater&.id == params[:id].to_i
+
+        unless manager
+            redirect_to root_path, alert: "担当映画館以外の編集権限がありません。"
+        end
+    end
 end

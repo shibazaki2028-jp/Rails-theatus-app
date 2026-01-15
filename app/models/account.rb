@@ -2,7 +2,8 @@ class Account < ApplicationRecord
     has_secure_password
 
     has_many :reservations, dependent: :destroy
-    #has_many :administrators
+    has_many :administrators
+    has_many :theater, through: :administrator, source: :theater
 
     validates :user_name, presence: true
     validates :email, email: { allow_blank: true }
