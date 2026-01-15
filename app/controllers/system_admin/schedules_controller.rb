@@ -1,5 +1,6 @@
 class SystemAdmin::SchedulesController < ApplicationController
-    before_action :authenticate_system_admin!
+    before_action :authenticate_admin!
+    before_action :permit_theater_admin!, only: [:edit, :update, :destroy]
 
     def new
         @schedule = Schedule.new
@@ -38,6 +39,14 @@ class SystemAdmin::SchedulesController < ApplicationController
         @schedule.destroy
         redirect_to system_admin_schedules_path, notice: "スケジュールの削除が完了しました。"
     end
+
+    def authorize_theater_admin!
+        return if current_account.system_admin?
+    
+        if current_account.theater != @schedule.screen.theater
+          redirect_to system_admin_schedules_path, alert: "他館のスケジュールは操作できません。"
+        end
+      end
 
     def schedule_params
         params.require(:schedule).permit(:movie_id, :screen_id, :screened_at)

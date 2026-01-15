@@ -23,4 +23,21 @@ class SystemAdmin::TheatersController < ApplicationController
         end
     end
 
+    def edit
+        @theater = Theater.find(params[:id])
+
+        if current_account.theater_admin? && current_account.theater != @theater
+            redirect_to edit_system_admin_theater_path(current_account.theater), alert: "ご自身の劇場の編集画面へ移動しました。"
+        end
+    end
+
+    def update
+        @theater = Theater.find(params[:id])
+        @theater.assign_attributes(params[:theater])
+        if @theater.save
+            redirect_to system_admin_theaters_path, notice: "映画館の更新が完了しました。"
+        else
+            render "edit"
+        end
+    end
 end

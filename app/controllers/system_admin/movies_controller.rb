@@ -1,6 +1,5 @@
 class SystemAdmin::MoviesController < ApplicationController
-    before_action :authenticate_admin!
-
+    before_action :authenticate_system_admin!
 
     #一覧表示
     def index 

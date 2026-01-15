@@ -1,4 +1,6 @@
 class SystemAdmin::AccountsController < ApplicationController
+    before_action :authenticate_system_admin!
+    
     def index
         @accounts = Account.all
         
