@@ -10,6 +10,8 @@ class SystemAdmin::AccountsController < ApplicationController
 
     def new
       @account = Account.new
+
+      @account.build_administrator
     end
   
     def create
@@ -41,5 +43,11 @@ class SystemAdmin::AccountsController < ApplicationController
       redirect_to system_admin_accounts_path, notice: "会員を削除しました。"
     end
 
+    def account_params
+      params.require(:account).permit(
+        :user_name, :email, :password, :role,
+        administrator: [:theater_id] 
+      )
+    end
 
   end

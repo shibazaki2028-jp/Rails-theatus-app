@@ -15,6 +15,12 @@
     <th>役職</th>
     <td><%= @account.role %></td>
   </tr>
+  <% if @account.theater_admin? %>
+    <tr>
+      <th>担当映画館</th>
+      <td><%= @account.theater.name %></td>
+    </tr>
+  <% end %>
 </table>
 <ul class="toolbar">
   <%= link_to "アカウント情報の編集", edit_system_admin_account_path(@account) %>

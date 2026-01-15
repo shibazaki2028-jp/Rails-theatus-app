@@ -1,4 +1,4 @@
-<% @page_title = "会員登録" %>
+<% @page_title = "会員登録(システム管理者)" %>
 
 <h1><%= @page_title %></h1>
 
@@ -19,16 +19,21 @@
     <%= f.text_field :password %>
   </div>
 
-  <div>
-    <%= f.radio_button :role, "system_admin" %>
+    <%= f.radio_button :role, "system_admin", id: "role_system" %>
     <%= f.label :role_0, "システム管理者" %>
-    <%= f.radio_button :role, "theater_admin" %>
+    <%= f.radio_button :role, "theater_admin", id: "role_theater" %>
     <%= f.label :role_1, "映画館管理者" %>
-    <%= f.radio_button :role, "general" %>
+    <%= f.radio_button :role, "general", id: "role_general" %>
     <%= f.label :role_2, "一般会員" %>
+
+  <div class="theater-form-box">
+    <p>担当する映画館を選択してください</p>
+    <%= f.fields_for :administrator do |admin_f| %>
+      <%= admin_f.collection_select :theater_id, Theater.all, :id, :name%>
+    <% end %>
   </div>
 
+  <hr>
   <%= f.submit "登録する" %>
 <% end %>
 
-<%= link_to "既にアカウントをお持ちの方（ログイン）", new_session_path %>

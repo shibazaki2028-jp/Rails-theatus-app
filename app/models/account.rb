@@ -2,8 +2,10 @@ class Account < ApplicationRecord
     has_secure_password
 
     has_many :reservations, dependent: :destroy
-    has_many :administrators
-    has_many :theater, through: :administrator, source: :theater
+    has_one :administrator
+    has_one :theater, through: :administrator, source: :theater
+
+    accepts_nested_attributes_for :administrator
 
     validates :user_name, presence: true
     validates :email, email: { allow_blank: true }

@@ -1,0 +1,7 @@
+.theater-form-box {
+    display: none;
+  }
+
+  #role_theater:checked ~ .theater-form-box {
+    display: block;
+  }
