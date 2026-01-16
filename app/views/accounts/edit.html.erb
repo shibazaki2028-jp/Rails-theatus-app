@@ -2,6 +2,8 @@
 
 <h1><%= @page_title %></h1>
 
+<%= link_to "マイページ", account_path(current_account) %>
+
 <%= form_with(model: [:system_admin, @account]) do |f| %>
 
   <div>

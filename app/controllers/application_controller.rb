@@ -13,13 +13,13 @@ class ApplicationController < ActionController::Base
 
     def authenticate_admin!
         unless current_account&.theater_admin? || current_account&.system_admin?
-            redirect_to root_path, alert: "作品情報の管理権限がありません。"
+            redirect_to root_path, alert: "管理権限がありません。"
         end
     end
     
     def authenticate_system_admin!
         unless current_account&.system_admin?
-            redirect_to root_path, alert: "作品情報の管理権限がありません。" 
+            redirect_to root_path, alert: "管理権限がありません。" 
         end
     end
 

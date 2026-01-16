@@ -4,6 +4,11 @@ class SystemAdmin::SchedulesController < ApplicationController
 
     def new
         @schedule = Schedule.new
+        if current_account.system_admin?
+            @screens = Screen.all
+        else
+            @screens = current_account.theater.screens
+        end
     end
 
     def index
