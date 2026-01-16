@@ -4,15 +4,18 @@ class SystemAdmin::SchedulesController < ApplicationController
 
     def new
         @schedule = Schedule.new
-        if current_account.system_admin?
-            @screens = Screen.all
-        else
-            @screens = current_account.theater.screens
-        end
+        extracted_screens
     end
 
     def index
-        @schedules = Schedule.all.includes(:movie, screen: :theater).order(:screened_at)
+        if current_account.system_admin?
+            @schedules = Schedule.all.includes(:movie, screen: :theater).order(:screened_at)
+        else
+            @schedules = Schedule.joins(screen: :theater)
+            .where(screens: { theater_id: current_account.theater.id })
+            .includes(:movie, screen: :theater)
+            .order(:screened_at)
+        end
         @schedules_by_movie = @schedules.group_by(&:movie)
     end
 
@@ -21,11 +24,7 @@ class SystemAdmin::SchedulesController < ApplicationController
         if @schedule.save
             redirect_to system_admin_schedules_path, notice: "スケジュールを登録しました"
         else
-            if current_account.system_admin?
-                @screens = Screen.all
-            else
-                @screens = current_account.theater.screens
-            end
+            extracted_screens
             render :new
         end
     end
@@ -60,5 +59,13 @@ class SystemAdmin::SchedulesController < ApplicationController
 
     def schedule_params
         params.require(:schedule).permit(:movie_id, :screen_id, :screened_at)
+    end
+
+    def extracted_screens
+        if current_account.system_admin?
+            @screens = Screen.all
+        else
+            @screens = current_account.theater.screens
+        end
     end
 end
