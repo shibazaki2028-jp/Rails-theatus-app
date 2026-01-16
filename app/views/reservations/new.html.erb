@@ -7,6 +7,12 @@
   <%= options_from_collection_for_select(@prices, :id, :name_with_value) %>
 </div>
 
+<% if current_account.general? || current_account.system_admin? %>
+  <%= link_to "映画の詳細に戻る", movie_path(@schedule.movie) %>
+<% else %>
+  <%= link_to "映画館詳細に戻る", system_admin_theater_path(current_account.theater) %>
+<% end %>
+
 <%= form_with(model: [@schedule, @reservation], local: true) do |f| %>
 
   <div class="seat-selection">

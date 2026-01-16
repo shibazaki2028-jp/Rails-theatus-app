@@ -11,6 +11,11 @@
   </div>
 <% end %>
 
+<% if current_account.system_admin? %>
+  <%= link_to "映画館一覧", system_admin_theaters_path %>
+<% elsif current_account.theater_admin? %>
+  <%= link_to "#{current_account.theater.name} の詳細に戻る", system_admin_theater_path(current_account.theater) %>
+<% end %>
 <%= form_with(model: [:system_admin, @schedule]) do |f| %>
   <div>
     <%= f.label :movie_id, "映画タイトル" %>
