@@ -31,6 +31,12 @@ class AccountsController < ApplicationController
     end
   end
 
+  def destroy
+    @account = Account.find(params[:id])
+    @account.destroy
+    redirect_to :root, notice: "退会しました。"
+  end
+
   def account_params
     params.require(:account).permit(:user_name, :email, :password, :role)
   end

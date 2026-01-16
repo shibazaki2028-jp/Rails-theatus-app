@@ -1,7 +1,11 @@
 <% @page_title = "スクリーン管理(システム管理者)" %>
 <h1><%= @page_title %></h1>
 
+<% if current_account.system_admin? %>
+  <%= link_to "映画館一覧", system_admin_theaters_path %>
+<% else %>
   <%= link_to "#{current_account.theater.name} の詳細に戻る", system_admin_theater_path(current_account.theater) %>
+<% end %>
 
 <table>
   <thead>
