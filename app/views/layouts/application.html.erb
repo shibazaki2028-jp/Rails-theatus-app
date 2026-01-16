@@ -25,7 +25,8 @@
               <span>ようこそ、<%= current_account.user_name %> さん</span>
             </li>
             <% if current_account&.theater_admin? || current_account&.system_admin? %>
-              <%= link_to "【管理】シアター設定", system_admin_theaters_path %>
+              <%= link_to "【管理】映画館設定", system_admin_theaters_path %>
+              <%= link_to "【管理】スケジュール一覧", system_admin_schedules_path %>
               <% if current_account&.system_admin? %>
               <%= link_to "【管理】映画登録", new_system_admin_movie_path %>
               <%= link_to "【管理】アカウント一覧", system_admin_accounts_path %>

@@ -14,7 +14,7 @@
   <% if current_account.theater_admin? %>
     <tr>
       <th>担当映画館</th>
-      <td><%= @account.theater.name %></td>
+      <td><%= @account.theater.name || "未割り当て" %></td>
     </tr>
   <% end %>
 </table>

@@ -1,6 +1,6 @@
 class SystemAdmin::AccountsController < ApplicationController
     before_action :authenticate_system_admin!
-    
+
     def index
         @accounts = Account.all
         
@@ -17,7 +17,7 @@ class SystemAdmin::AccountsController < ApplicationController
     end
   
     def create
-      @account = Account.new(params[:account])
+      @account = Account.new(account_params)
       if @account.save
         redirect_to root_path, notice: "アカウントを登録しました"
       else
@@ -27,11 +27,12 @@ class SystemAdmin::AccountsController < ApplicationController
     
     def edit
       @account = Account.find(params[:id])
+
+      @account.build_administrator unless @account.administrator
     end
 
     def update
       @account = Account.find(params[:id])
-      @account.assign_attributes(params[:account])
       if @account.save
         redirect_to system_admin_account_path(@account), notice: "アカウント情報を更新しました。"
       else
@@ -48,7 +49,7 @@ class SystemAdmin::AccountsController < ApplicationController
     def account_params
       params.require(:account).permit(
         :user_name, :email, :password, :role,
-        administrator: [:theater_id] 
+        administrator_attributes: [:id, :theater_id]
       )
     end
 

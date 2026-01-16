@@ -21,6 +21,11 @@ class SystemAdmin::SchedulesController < ApplicationController
         if @schedule.save
             redirect_to system_admin_schedules_path, notice: "スケジュールを登録しました"
         else
+            if current_account.system_admin?
+                @screens = Screen.all
+            else
+                @screens = current_account.theater.screens
+            end
             render :new
         end
     end
@@ -45,7 +50,7 @@ class SystemAdmin::SchedulesController < ApplicationController
         redirect_to system_admin_schedules_path, notice: "スケジュールの削除が完了しました。"
     end
 
-    def authorize_theater_admin!
+    def permit_theater_admin!
         return if current_account.system_admin?
     
         if current_account.theater != @schedule.screen.theater

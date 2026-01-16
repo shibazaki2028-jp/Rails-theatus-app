@@ -10,6 +10,7 @@
         <tr>
           <th>スクリーン</th>
           <th>映画館</th>
+          <th>日付</th>
           <th>上映開始</th>
           <th>上映終了</th>
           <th>操作</th>
@@ -20,7 +21,8 @@
           <tr>
             <td><%= schedule.screen.info %></td>
             <td><%= schedule.screen.theater.name %></td>
-            <td><%= schedule.screened_at.strftime("%Y/%m/%d %H:%M") %></td>
+            <td><%= schedule.screened_at.strftime("%Y/%m/%d") %></td>
+            <td><%= schedule.screened_at.strftime("%H:%M") %></td>
             <td><%= schedule.ended_at.strftime("%H:%M") %></td>
             <td>
               <%= link_to "編集", edit_system_admin_schedule_path(schedule) %>
