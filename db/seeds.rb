@@ -142,3 +142,16 @@ screens.each_with_index do |screen, index|
   end
 
 end
+
+puts "== Seeding prices (Master Data) =="
+
+prices_data = [
+  { ticket_type: "一般", price: 1900 },
+  { ticket_type: "学生", price: 1500 }
+]
+
+prices_data.each do |data|
+  Price.find_or_create_by!(ticket_type: data[:ticket_type]) do |p|
+    p.price = data[:price]
+  end
+end
