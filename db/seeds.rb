@@ -52,7 +52,7 @@ puts "== Seeding movies =="
 movies = [
   {
     title: "あの国へ　-前編-",
-    category: 1,
+    category: "1",
     body: <<~TEXT,
       遠い国へと旅立った少年と少女。
       分断された世界の中で、二人はまだ知らない運命と向き合うことになる。
@@ -65,7 +65,7 @@ movies = [
   },
   {
     title: "あの国へ　-後編-",
-    category: 1,
+    category: "1",
     body: <<~TEXT,
       あの国の真実が明らかになり、物語は終局へと向かう。
       選択の先に待つ未来とは――。
@@ -78,7 +78,7 @@ movies = [
   },
   {
     title: "あの国へ行こう",
-    category: 3,
+    category: "3",
     body: "うっかり過去に飛んでしまった主人公が巻き起こすドタバタ劇。",
     published_on: Date.new(2025, 1, 15),
     ended_on: Date.new(2025, 4, 15),
@@ -87,7 +87,7 @@ movies = [
   },
   {
     title: "アタマ探し",
-    category: 1,
+    category: "1",
     body: "無くなってしまったアタマを探す少女の物語。",
     published_on: Date.new(2025, 1, 13),
     ended_on: Date.new(2025, 5, 31),
@@ -96,7 +96,7 @@ movies = [
   },
   {
     title: "カーチェイサー",
-    category: 2,
+    category: "2",
     body: "街を舞台に繰り広げられるノンストップカーチェイス。",
     published_on: Date.new(2025, 1, 5),
     ended_on: Date.new(2025, 6, 30),
@@ -105,8 +105,8 @@ movies = [
   }
 ]
 
-movies.each do |attrs|
-  Movie.find_or_create_by!(title: attrs[:title]) do |movie|
+created_movies = movies.map do |attrs|
+    Movie.find_or_create_by!(title: attrs[:title]) do |movie|
     movie.category       = attrs[:category]
     movie.body           = attrs[:body]
     movie.published_on   = attrs[:published_on]
@@ -116,15 +116,11 @@ movies.each do |attrs|
   end
 end
 
-created_movies = movies_list.map do |attrs|
-  Movie.create!(attrs)
-end
-
 puts "== Seeding schedules =="
 active_movies = created_movies.select(&:publish)
-times = ["9:00", "9:00", "15:00", "16:00"]
+times = ["9:00", "9:00", "15:00", "19:00"]
 
-created_screens.each_with_index do |screen, index|
+screens.each_with_index do |screen, index|
   movie = active_movies[index % active_movies.length]
   times.each_with_index do |time_str, t_index|
     

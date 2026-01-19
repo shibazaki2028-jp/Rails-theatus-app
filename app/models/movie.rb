@@ -15,7 +15,7 @@ class Movie < ApplicationRecord
 
   validates :publish, inclusion: { in: [true, false] }
 
-  enum :category, { "アクション": 1, "コメディ": 2, "フィクション": 3, "恋愛": 4, "ホラー": 5, "SF":6 }
+  enum :category, { "アクション": "1", "コメディ": "2", "フィクション": "3", "恋愛": "4", "ホラー": "5", "SF": "6" }
 
   class << self
     def search(title, category, address)
