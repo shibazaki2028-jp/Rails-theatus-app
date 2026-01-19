@@ -1,21 +1,21 @@
 <% @page_title = "ログインフォーム" %>
 <h1><%= @page_title %></h1>
 
-<%= form_with(scope: :session, url: session_path) do |f| %>
+<% if flash.alert %><p class="alert"><%= flash.alert %></p><% end %>
+<%= form_tag :session, id: "login-form" do %>
   <div>
-    <%= f.label :user_name %>
-    <%= f.text_field :user_name %>
+    <%= link_to "会員登録はこちら", new_account_path %>
+  </div>
+  <div>
+    <label>メールアドレス：</label>
+    <input type="text" name="email">
+  </div>
+  <div>
+    <label>パスワード：</label>
+    <input type="password" name="password">
+  </div>
+  <div>
+    <input type="submit" value="ログイン">
   </div>
 
-  <div>
-    <%= f.label :email %>
-    <%= f.text_field :email %>
-  </div>
-
-  <div>
-    <%= f.label :password %>
-    <%= f.text_field :password %>
-  </div>
-
-  <%= f.submit "ログイン" %>
 <% end %>

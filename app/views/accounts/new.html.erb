@@ -2,24 +2,25 @@
 
 <h1><%= @page_title %></h1>
 
-<%= form_with(model: @account) do |f| %>
+<% if flash.alert %><p class="alert"><%= flash.alert %></p><% end %>
+<%= form_tag :session, id: "login-form" do %>
 
   <div>
-    <%= f.label :user_name %>
-    <%= f.text_field :user_name %>
+    <label>ユーザー名：</label>
+    <input type="text" name="user_name">
   </div>
-
   <div>
-    <%= f.label :email %>
-    <%= f.text_field :email %>
+    <label>メールアドレス：</label>
+    <input type="text" name="email">
   </div>
-
   <div>
-    <%= f.label :password %>
-    <%= f.text_field :password %>
+    <label>パスワード：</label>
+    <input type="password" name="password">
+  </div>
+  <div>
+    <input type="submit" value="ログイン">
   </div>
 
-  <%= f.submit "登録する" %>
 <% end %>
 
 <%= link_to "既にアカウントをお持ちの方（ログイン）", new_session_path %>
