@@ -15,26 +15,32 @@
 
 <%= form_with(model: [@schedule, @reservation], local: true) do |f| %>
 
-  <div class="seat-selection">
-    <% @seats.group_by(&:queue).each do |queue, seats_in_row| %>
-      <div class="seat-row">
-        <%= queue %>行:
+<div class="seat-selection">
+  <% @seats.group_by(&:queue).each do |queue, seats_in_row| %>
+    <div class="seat-row">
+      <div class="row-label"><%= queue %>行:</div>
+      
+      <div class="seats-list">
         <% seats_in_row.each do |seat| %>
-          <label class="seat-label">
-            <% is_reserved = seat.reserved?(@schedule) %>
+          <% is_reserved = seat.reserved?(@schedule) %>
+          
+          <label class="seat-label <%= 'reserved' if is_reserved %>" for="seat_<%= seat.id %>">
             <%= check_box_tag "seat_ids[]", seat.id, false, 
-                disabled: is_reserved, 
-                class: "seat-check",
-                data: { seat_id: seat.id, seat_name: "#{queue}行-#{seat.verse}" }
-            %>
-            <span class="<%= 'reserved' if is_reserved %>"><%= seat.verse %></span>
+                              id: "seat_#{seat.id}", 
+                              class: "seat-check", 
+                              data: { 
+                                seat_id: seat.id, 
+                                seat_name: "#{queue}-#{seat.verse}" 
+                              },
+                              disabled: is_reserved %>
+            
+            <span class="seat-number"><%= seat.verse %></span>
           </label>
         <% end %>
       </div>
-    <% end %>
-  </div>
-
-
+    </div>
+  <% end %>
+</div>
 
   <div id="selected-seats-list" class="selected-seats-container">
     <p class="no-selection">座席を選択してください</p>

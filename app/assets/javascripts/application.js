@@ -3,20 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedList = document.getElementById('selected-seats-list');
     const priceOptionsHtml = document.getElementById('price-options-data').innerHTML;
   
-    // 1. 座席の表示を更新するメイン関数
+
     const updateSeatDisplay = (checkbox) => {
       const seatId = checkbox.dataset.seatId;
-      const seatName = checkbox.dataset.seatName; // dataset.seatName で取得
+      const seatName = checkbox.dataset.seatName;
       const existingElement = document.getElementById(`selected-seat-${seatId}`);
+
+      const seatLabel = checkbox.closest('.seat-label');
+      if (checkbox.checked) {
+        seatLabel.classList.add('selected');
+      } else {
+        seatLabel.classList.remove('selected');
+      }
   
       if (checkbox.checked) {
         if (!existingElement) {
-          // 選択リストに追加
           const div = document.createElement('div');
           div.id = `selected-seat-${seatId}`;
           div.className = 'selected-seat-item';
           
-          // 編集時：初期の price_id があればそれを選択状態にする
+          // 初期の price_id があればそれを選択状態にする
           const initialPriceId = checkbox.dataset.initialPriceId;
   
           div.innerHTML = `
@@ -27,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
           selectedList.appendChild(div);
   
-          // 初期値があればセット
           if (initialPriceId) {
             div.querySelector('select').value = initialPriceId;
           }
@@ -45,12 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
   
-    // 2. イベントリスナーの設定（クリック時）
     seatChecks.forEach(check => {
       check.addEventListener('change', () => updateSeatDisplay(check));
     });
   
-    // 3. 【重要】初期化処理：ページ読み込み時に最初からチェックされている席を処理
     seatChecks.forEach(check => {
       if (check.checked) {
         updateSeatDisplay(check);
