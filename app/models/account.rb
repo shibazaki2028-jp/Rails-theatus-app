@@ -7,7 +7,11 @@ class Account < ApplicationRecord
 
     accepts_nested_attributes_for :administrator
 
-    validates :user_name, presence: true
+    validates :user_name, presence: true, 
+        format: { 
+            with: /\A[^0-9]+\z/, 
+            message: "に数字を含めることはできません" 
+        }
     validates :email, email: { allow_blank: true }, presence: true, uniqueness: { case_sensitive: false}
 
     attr_accessor :current_password
