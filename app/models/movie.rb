@@ -1,9 +1,11 @@
 class Movie < ApplicationRecord
   has_many :schedules
+  
   validates :title, presence: true
   validates :category, presence: true
   validates :published_on, presence: true
   validates :ended_on, presence: true
+  validates :body, presence: true
 
   #上映時間は0より大きい数値でなければいけない
   validates :screening_time, presence: true,

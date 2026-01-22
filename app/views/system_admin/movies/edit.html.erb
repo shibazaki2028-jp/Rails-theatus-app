@@ -12,11 +12,11 @@
     </tr>
     <tr>
         <th><%= form.label :category,  "カテゴリ" %></th>
-        <td><%= form.text_field :category %></td>
+        <td><%= form.select :category, Movie.categories.keys %></td>
     </tr>
     <tr>
         <th><%= form.label :screening_time,  "上映時間" %></th>
-        <td><%= form.number_field :screening_time %></td>
+        <td><%= form.text_field :screening_time %></td>
     </tr>
     <tr>
         <th><%= form.label :body, "映画説明" %></th>
