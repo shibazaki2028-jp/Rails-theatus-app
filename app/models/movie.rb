@@ -18,7 +18,7 @@ class Movie < ApplicationRecord
   enum :category, { "ホラー": "1", "アクション": "2", "コメディ": "3", "フィクション": "4", "恋愛": "5",  "SF": "6" }
 
   class << self
-    def search(title, category, address)
+    def search(title, category, address, publish)
         rel = all
         if title.present?
             rel = rel.where("title LIKE ? ", "%#{title}%")
@@ -30,6 +30,9 @@ class Movie < ApplicationRecord
             rel = rel.joins(schedules: :theater)
             .where("theaters.address LIKE ?", "%#{address}%")
             .distinct
+        end
+        if publish.present?
+            rel = rel.where(publish: publish)
         end
         rel
     end
