@@ -1,7 +1,7 @@
 /* 表：一覧表示、詳細表示 */
 table.list, table.attr {
-    font-size: 90%;
-    width: 100%;
+    font-size: 110%;
+    width: auto;
   }
   
   table.list th, table.attr th {
@@ -12,7 +12,8 @@ table.list, table.attr {
   
   table.list td, table.list th,
   table.attr td, table.attr th {
-    padding: 4px;
+    padding: 4px 8px;
+    line-height: 1.2;
   }
   
   table.list th {

@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-    #before_action :update_expiration_time
+    before_action :update_expiration_time
     helper_method :current_account, :logged_in?
     
     private 
@@ -20,6 +20,15 @@ class ApplicationController < ActionController::Base
     def authenticate_system_admin!
         unless current_account&.system_admin?
             redirect_to root_path, alert: "管理権限がありません。" 
+        end
+    end
+
+    private def update_expiration_time
+        if cookies.signed[:account_id].present?
+            cookies.signed[:account_id] = {
+                value: cookies.signed[:account_id],
+                expires: 1.day.from_now
+            }
         end
     end
 
