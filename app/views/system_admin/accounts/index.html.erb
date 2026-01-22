@@ -3,6 +3,12 @@
 
 <%= link_to "新規アカウント登録", new_system_admin_account_path %>
 
+<%= form_tag :search_system_admin_accounts, method: :get, class: "search" do %>
+  <%= text_field_tag :user_name, params[:user_name], placeholder: "名前" %>
+  <%= submit_tag "検索" %>
+<% end %>
+
+<% if @accounts.present? %>
 <table class = "list" >
   <thead>
     <tr>
@@ -31,3 +37,6 @@
     <% end %>
   </tbody>
 </table>
+<% else %>
+  <p>情報がありません。</p>
+<% end %>

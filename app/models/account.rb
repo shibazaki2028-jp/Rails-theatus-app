@@ -19,4 +19,14 @@ class Account < ApplicationRecord
     validates :role, presence: true
 
     enum role: { system_admin: 0, theater_admin: 1, general: 2 }
+
+    class << self
+        def search(user_name)
+            rel = all
+            if user_name.present?
+                rel = rel.where("user_name LIKE ? ", "%#{user_name}%")
+            end
+            rel
+        end
+      end
 end

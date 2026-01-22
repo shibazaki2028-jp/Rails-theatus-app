@@ -53,4 +53,10 @@ class SystemAdmin::AccountsController < ApplicationController
       )
     end
 
+    def search
+      @accounts = Account.search(params[:user_name])
+      #.page(params[:page]).per(15)
+      render "index"
+    end
+
   end
