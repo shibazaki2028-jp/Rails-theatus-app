@@ -1,26 +1,15 @@
-<% @page_title = "会員登録" %>
+<% @page_title = "新規会員登録" %>
 
 <h1><%= @page_title %></h1>
 
-<% if flash.alert %><p class="alert"><%= flash.alert %></p><% end %>
-<%= form_tag :session, id: "login-form" do %>
-
-  <div>
-    <label>ユーザー名：</label>
-    <input type="text" name="user_name">
-  </div>
-  <div>
-    <label>メールアドレス：</label>
-    <input type="text" name="email">
-  </div>
-  <div>
-    <label>パスワード：</label>
-    <input type="password" name="password">
-  </div>
-  <div>
-    <input type="submit" value="ログイン">
-  </div>
-
+<%= render "shared/errors", obj: @account %>
+<%= form_for @account do |form| %>
+  <!-- >renderメソッドで部分テンプレート「_form.html.erb」を埋め込み<-->
+  <%= render "shared/account_form", form: form %>
+  <!-- >submitメソッドで送信ボタン<-->
+  <div><%= form.submit value="会員登録" %></div>
 <% end %>
 
+
 <%= link_to "既にアカウントをお持ちの方（ログイン）", new_session_path %>
+

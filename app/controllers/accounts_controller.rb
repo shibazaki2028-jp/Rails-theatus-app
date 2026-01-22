@@ -24,6 +24,8 @@ class AccountsController < ApplicationController
 
   def create
     @account = Account.new(account_params)
+    #一般会員の新規登録はroleの設定は"general"で固定する
+    @account.role = 2
     if @account.save
       redirect_to root_path, notice: "アカウントを登録しました"
     else
