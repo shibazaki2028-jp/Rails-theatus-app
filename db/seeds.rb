@@ -117,19 +117,20 @@ created_movies = movies.map do |attrs|
 end
 
 puts "== Seeding schedules =="
-active_movies = created_movies.select(&:publish)
+
 times = ["9:00", "9:00", "15:00", "19:00"]
 
-screens.each_with_index do |screen, index|
-  movie = active_movies[index % active_movies.length]
-  times.each_with_index do |time_str, t_index|
-    
-    if t_index == 0
-      start_date = Date.today
-    else
-      start_date = Date.tomorrow
-    end
+screens.each_with_index do |screen, s_index|
+  if screen.theater.name.include?("横浜")
+    movie = created_movies[3]
+  else
+    others = [created_movies[0], created_movies[2],]
+    movie = others[s_index % others.length]
+  end
 
+  times.each_with_index do |time_str, t_index|
+    start_date = (t_index == 0) ? Date.today : Date.tomorrow
+    
     start_time = Time.zone.parse("#{start_date} #{time_str}")
     end_time = start_time + movie.screening_time.minutes + 20.minutes
 
@@ -140,7 +141,27 @@ screens.each_with_index do |screen, index|
       ended_at: end_time
     )
   end
+end
 
+screens.each do |screen|
+  if screen.theater.name.include?("川崎駅")
+
+    movie = created_movies[4]
+
+    times.each_with_index do |time_str, t_index|
+      start_date = (t_index == 0) ? Date.today + 2.days : Date.today + 3.days
+      
+      start_time = Time.zone.parse("#{start_date} #{time_str}")
+      end_time = start_time + movie.screening_time.minutes + 20.minutes
+
+      Schedule.create!(
+        movie: movie,
+        screen: screen,
+        screened_at: start_time,
+        ended_at: end_time
+      )
+    end
+  end
 end
 
 puts "== Seeding prices (Master Data) =="
