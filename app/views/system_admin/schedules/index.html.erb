@@ -25,6 +25,7 @@
             <td><%= schedule.screened_at.strftime("%H:%M") %></td>
             <td><%= schedule.ended_at.strftime("%H:%M") %></td>
             <td>
+              <%= link_to "詳細", system_admin_schedule_path(schedule) %>
               <%= link_to "編集", edit_system_admin_schedule_path(schedule) %>
               <%= button_to "削除", [:system_admin, schedule], 
                   method: :delete, 

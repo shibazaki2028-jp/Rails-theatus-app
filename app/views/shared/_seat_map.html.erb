@@ -1,0 +1,38 @@
+<%# app/views/shared/_seat_map.html.erb %>
+<div class="seat-selection <%= admin ? 'admin-mode' : 'user-mode' %>">
+  <% seats.group_by(&:queue).each do |queue, seats_in_row| %>
+    <div class="seat-row">
+      <div class="row-label"><%= queue %>行:</div>
+      
+      <div class="seats-list">
+        <% seats_in_row.each do |seat| %>
+          <%# 管理者はコントローラーで作った @reserved_details、ユーザーは既存の reserved? メソッドを使用 %>
+          <% detail = @reserved_details[seat.id] if admin %>
+          <% is_reserved = admin ? detail.present? : seat.reserved?(@schedule) %>
+          
+          <% if admin %>
+            <%# 管理者用：顧客情報を data 属性に持たせた div %>
+            <div class="seat-item <%= detail ? 'occupied' : 'empty' %>"
+                 data-customer-name="<%= detail.reservation.account.user_name if detail %>"
+                 data-seat-code="<%= "#{queue}-#{seat.verse}" %>">
+              <span class="seat-number"><%= seat.verse %></span>
+            </div>
+          <% else %>
+            <%# ユーザー用：チェックボックス入りの label %>
+            <label class="seat-label <%= 'reserved' if is_reserved %>" for="seat_<%= seat.id %>">
+              <%= check_box_tag "seat_ids[]", seat.id, false, 
+                                id: "seat_#{seat.id}", 
+                                class: "seat-check", 
+                                data: { 
+                                  seat_id: seat.id, 
+                                  seat_name: "#{queue}-#{seat.verse}" 
+                                },
+                                disabled: is_reserved %>
+              <span class="seat-number"><%= seat.verse %></span>
+            </label>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

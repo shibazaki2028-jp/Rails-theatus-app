@@ -1,21 +1,12 @@
 <% @page_title = "上映スケジュール登録" %>
 <h1><%= @page_title %></h1>
-<% if @schedule.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= @schedule.errors.count %>件のエラーが発生しました:</h2>
-    <ul>
-      <% @schedule.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
 
 <% if current_account.system_admin? %>
   <%= link_to "上映スケジュール一覧", system_admin_schedules_path %>
 <% elsif current_account.theater_admin? %>
   <%= link_to "#{current_account.theater.name} の詳細に戻る", system_admin_theater_path(current_account.theater) %>
 <% end %>
+
 <%= form_with(model: [:system_admin, @schedule]) do |f| %>
   <div>
     <%= f.label :movie_id, "映画タイトル" %>

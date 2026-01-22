@@ -67,3 +67,42 @@
     color: #ccc;
     font-size: 0.9rem;
   }
+  /* レイアウトの基本（グリッド状にする） */
+.seat-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+}
+
+.row-label {
+  width: 50px;
+  font-weight: bold;
+}
+
+.seats-list {
+  display: flex;
+  flex-wrap: wrap; /* 横に並べて溢れたら改行 */
+  gap: 5px;
+}
+
+/* 座席の見た目（管理者用とユーザー用両方に対応） */
+.seat-item, .seat-label {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* 予約済み（管理者：occupied / ユーザー：reserved） */
+.occupied, .reserved {
+  background-color: #ff4d4d;
+  color: white;
+}

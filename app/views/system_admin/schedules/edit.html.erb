@@ -1,15 +1,5 @@
 <% @page_title = "上映スケジュール編集" %>
 <h1><%= @page_title %></h1>
-<% if @schedule.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= @schedule.errors.count %>件のエラーが発生しました:</h2>
-    <ul>
-      <% @schedule.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
 
 <% if current_account.system_admin? %>
   <%= link_to "上映スケジュール一覧", system_admin_schedules_path %>

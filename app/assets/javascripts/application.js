@@ -1,8 +1,20 @@
+// application.js の一番上にこれを追記
+document.addEventListener('click', (e) => {
+  // 管理者モードの座席、かつ予約済み（occupied）をクリックした時
+  const seat = e.target.closest(".admin-mode .occupied");
+  if (seat) {
+    const name = seat.dataset.customerName;
+    const code = seat.dataset.seatCode;
+    alert(`座席：${code}\n予約者：${name} 様`);
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const seatChecks = document.querySelectorAll('.seat-check');
     const selectedList = document.getElementById('selected-seats-list');
-    const priceOptionsHtml = document.getElementById('price-options-data').innerHTML;
-  
+    if (priceOptionsData) {
+      const priceOptionsHtml = priceOptionsData.innerHTML;
+      const seatChecks = document.querySelectorAll('.seat-check');
 
     const updateSeatDisplay = (checkbox) => {
       const seatId = checkbox.dataset.seatId;
@@ -59,4 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSeatDisplay(check);
       }
     });
-  });
+  }
+// 管理画面用の処理は独立して動くようにする
+const adminMap = document.querySelector(".admin-mode");
+if (adminMap) {
+    adminMap.addEventListener("click", (e) => {
+        const seat = e.target.closest(".occupied");
+        if (seat) {
+            alert(`座席：${seat.dataset.seatCode}\n予約者：${seat.dataset.customerName} 様`);
+        }
+    });
+}
+});

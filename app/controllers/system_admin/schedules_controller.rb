@@ -49,6 +49,13 @@ class SystemAdmin::SchedulesController < ApplicationController
         redirect_to system_admin_schedules_path, notice: "スケジュールの削除が完了しました。"
     end
 
+    def show
+        @schedule = Schedule.find(params[:id])
+        @seats = @schedule.screen.seats.all
+
+        @reserved_details = @schedule.reservation_details.includes(reservation: :account).index_by(&:seat_id)
+    end
+
     def permit_theater_admin!
         return if current_account.system_admin?
     
