@@ -15,6 +15,20 @@ class Movie < ApplicationRecord
 
   validates :publish, inclusion: { in: [true, false] }
 
+  validate :date_check
+
+  private
+
+  def date_check
+    return if published_on.blank? || ended_on.blank?
+
+    if ended_on < published_on
+      errors.add(:ended_on, "は公開開始日以降の日付を選択してください")
+    elsif ended_on < Date.today
+      errors.add(:ended_on, "は今日以降の日付を選択してください")
+    end
+  end
+
   enum :category, { "ホラー": "1", "アクション": "2", "コメディ": "3", "フィクション": "4", "恋愛": "5",  "SF": "6" }
 
   class << self
