@@ -8,7 +8,7 @@ class Account < ApplicationRecord
     accepts_nested_attributes_for :administrator
 
     validates :user_name, presence: true
-    validates :email, email: { allow_blank: true }
+    validates :email, email: { allow_blank: true }, presence: true
 
     attr_accessor :current_password
     validates :password, presence: { if: :current_password }
