@@ -4,7 +4,6 @@
 
 <%= link_to "マイページ", account_path(current_account) %>
 
-<%= render "shared/errors", obj: @account %>
 <%= form_for @account do |form| %>
   <!-- >renderメソッドで部分テンプレート「_form.html.erb」を埋め込み<-->
   <%= render "shared/account_form", form: form %>

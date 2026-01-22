@@ -55,7 +55,7 @@
     <% if flash[:alert] %>
       <div class="flash alert"><%= flash[:alert] %></div>
     <% end %>
-
+    <%= render_errors %>
       <%= yield %>
     </main>
   </body>

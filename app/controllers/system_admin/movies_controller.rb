@@ -25,6 +25,7 @@ class SystemAdmin::MoviesController < ApplicationController
             redirect_to system_admin_movies_path, notice: "映画の登録が完了しました。"
         else
             render "new"
+            flash.now[:alert] = @movie.errors.full_messages
         end
     end
 
@@ -41,6 +42,7 @@ class SystemAdmin::MoviesController < ApplicationController
             redirect_to system_admin_movies_path, notice: "映画の更新が完了しました。"
         else
             render "edit"
+            flash.now[:alert] = @movie.errors.full_messages
         end
     end
 
