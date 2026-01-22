@@ -44,7 +44,7 @@ class SystemAdmin::SchedulesController < ApplicationController
     end
 
     def destroy
-        @schedule = schedule.find(params[:id])
+        @schedule = Schedule.find(params[:id])
         @schedule.destroy
         redirect_to system_admin_schedules_path, notice: "スケジュールの削除が完了しました。"
     end

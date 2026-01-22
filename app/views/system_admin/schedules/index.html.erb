@@ -26,8 +26,11 @@
             <td><%= schedule.ended_at.strftime("%H:%M") %></td>
             <td>
               <%= link_to "編集", edit_system_admin_schedule_path(schedule) %>
-              <%= link_to "削除", [:system_admin, @screen, schedule], method: :delete,
-                    data: { confirm: "本当に削除しますか？" }%>        
+              <%= button_to "削除", [:system_admin, schedule], 
+                  method: :delete, 
+                  onclick: "return confirm('本当に削除しますか？');",
+                  form: { data: { turbo: false } }, 
+                  class: "button-delete" %>
             </td>
             </td>
           </tr>
