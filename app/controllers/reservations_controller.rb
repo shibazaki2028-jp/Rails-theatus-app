@@ -49,14 +49,22 @@ class ReservationsController < ApplicationController
     end
 
     def edit
-        @reservation = current_account.reservations.find(params[:id])
+        if current_account.system_admin?
+            @reservation = Reservation.find(params[:id])
+        else
+            @reservation = current_account.reservations.find(params[:id])
+        end
         @schedule = @reservation.schedule
         @seats = @schedule.screen.seats
         @prices = Price.all
     end
 
     def update
-        @reservation = current_account.reservations.find(params[:id])
+        if current_account.system_admin?
+            @reservation = Reservation.find(params[:id])
+        else
+            @reservation = current_account.reservations.find(params[:id])
+        end
         @schedule = @reservation.schedule
       
         original_details = @reservation.reservation_details
