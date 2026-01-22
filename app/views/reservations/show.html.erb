@@ -23,5 +23,10 @@
 </div>
 
 <%= link_to "予約を編集する", edit_reservation_path(@reservation), class: "button" %>
+<%= button_to "予約をキャンセルする", 
+                reservation_path(@reservation), 
+                method: :delete, 
+                onclick: "return confirm('本当に削除しますか？');",
+                class: "button-danger" %>
 
 <%= link_to "一覧に戻る", reservations_path, class: "button" %>

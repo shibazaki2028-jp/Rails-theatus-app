@@ -91,6 +91,12 @@ class ReservationsController < ApplicationController
         render :edit
     end
 
+    def destroy
+        @reservation = Reservation.find(params[:id]) 
+        @reservation.destroy
+        redirect_to reservations_path, notice: "予約をキャンセルしました"
+    end
+
     def confirm
         @seat_ids = params[:seat_ids] || []
         @prices = params[:prices] || {}
