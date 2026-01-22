@@ -16,7 +16,9 @@ Rails.application.routes.draw do
 
   #上映スケジュールのidを予約画面へ渡すための導線
   resources :schedules, only: [] do
-    resources :reservations, only: [:new, :create, :show]
+    resources :reservations, only: [:new, :create, :show] do
+      post :confirm, on: :collection
+    end
   end
 
   resources :reservations

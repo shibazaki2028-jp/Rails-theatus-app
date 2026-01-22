@@ -45,7 +45,7 @@ class ReservationsController < ApplicationController
         @reservation.save!
 
         if @reservation.save
-            redirect_to :root#schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
+            redirect_to schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
         else
             @schedule = Schedule.find(params[:reservation][:schedule_id])
             @prices = Price.all
@@ -94,6 +94,20 @@ class ReservationsController < ApplicationController
         @seats = @schedule.screen.seats
         @prices = Price.all
         render :edit
+    end
+
+    def confirm
+        @seat_ids = params[:seat_ids] || []
+        @prices = params[:prices] || {}
+        @schedule = Schedule.find(params[:schedule_id])
+
+        @selected_seats = Seat.where(id: @seat_ids)
+        @selected_prices = Price.where(id: @prices.values)
+
+        @sum_price = @selected_seats.sum do |seat|
+            price_id = @prices[seat.id.to_s]
+            Price.find(price_id).price
+        end
     end
 
     def set_reservation
