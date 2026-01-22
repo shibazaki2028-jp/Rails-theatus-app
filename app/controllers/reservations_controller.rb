@@ -9,8 +9,8 @@ class ReservationsController < ApplicationController
     end
 
     def show
-        @reservation = Reservation.find(params[:id])
         @schedule = @reservation.schedule
+        @reservation = Reservation.find(params[:id])
     end
 
     def new
@@ -37,11 +37,6 @@ class ReservationsController < ApplicationController
             end
         end
         @reservation.reservation_details.each(&:valid?) 
-
-        # 2. その結果を表示する（これでターミナルに原因が出るようになります）
-        p "デバッグ: 予約詳細のエラー内容 -> #{@reservation.reservation_details.map { |d| d.errors.full_messages }}"
-    
-        # 3. 保存を実行
         @reservation.save!
 
         if @reservation.save
@@ -65,7 +60,7 @@ class ReservationsController < ApplicationController
         @schedule = @reservation.schedule
       
         original_details = @reservation.reservation_details
-        original_price_map = original_details.pluck(:price_id).tally # 例: {1=>2, 2=>1} (ID 1が2枚、ID 2が1枚)
+        original_price_map = original_details.pluck(:price_id).tally
         original_count = original_details.count
       
         new_seat_ids = params[:seat_ids] || []
@@ -100,6 +95,17 @@ class ReservationsController < ApplicationController
         @seat_ids = params[:seat_ids] || []
         @prices = params[:prices] || {}
         @schedule = Schedule.find(params[:schedule_id])
+
+        if @seat_ids.empty?
+            flash.now.alert = "座席を1つ以上選択してください"
+            
+            # new画面の表示に必要なデータを再取得
+            @seats = @schedule.screen.seats.order(:queue, :verse)
+            @prices_list = Price.all
+            @reservation = Reservation.new(schedule: @schedule)
+            
+            render :new, status: :unprocessable_entity and return
+        end
 
         @selected_seats = Seat.where(id: @seat_ids)
         @selected_prices = Price.where(id: @prices.values)

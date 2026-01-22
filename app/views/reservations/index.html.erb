@@ -3,7 +3,7 @@
 
 <%= link_to "マイページ", account_path(current_account) %>
 
-<% if @schedule.present? %>
+<% if @reservations.present? %>
   <table class = "list" >
     <thead>
       <tr>
@@ -11,7 +11,6 @@
         <th>開始時間</th>
         <th>映画タイトル</th>
         <th>映画館 / スクリーン</th>
-        <th>座席</th>
         <th>操作</th>
       </tr>
     </thead>
