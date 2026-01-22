@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
                 value: account.id,
                 expires: 1.day.from_now
             }
-            redirect_to :root
+            redirect_to :root, notice: "ログインしました"
         else
             flash.alert = "メールアドレスとパスワードが一致しません"
             render :new
