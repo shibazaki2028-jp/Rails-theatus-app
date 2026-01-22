@@ -21,4 +21,9 @@
 <ul class="toolbar">
   <%= link_to "アカウント情報の編集", :edit_account %>
   <%= link_to "予約一覧", reservations_path, class: "button" %>
+  <%= button_to "退会する", [current_account], 
+              method: :delete, 
+              onclick: "return confirm('本当に削除しますか？');",
+              form: { data: { turbo: false } }, 
+              class: "button-delete" %>
 </ul>

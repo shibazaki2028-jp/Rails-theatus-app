@@ -26,4 +26,10 @@
 </table>
 <ul class="toolbar">
   <%= link_to "アカウント情報の編集", edit_system_admin_account_path(@account) %>
-<%= link_to "予約一覧", system_admin_account_reservations_path(@account), class: "button" %></ul>
+  <%= link_to "予約一覧", system_admin_account_reservations_path(@account), class: "button" %>
+  <%= button_to "削除", [:system_admin, @account], 
+                method: :delete, 
+                onclick: "return confirm('本当に削除しますか？');",
+                form: { data: { turbo: false } }, 
+                class: "button-delete" %>
+</ul>
