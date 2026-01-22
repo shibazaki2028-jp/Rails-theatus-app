@@ -40,4 +40,10 @@ class SystemAdmin::TheatersController < ApplicationController
             render "edit"
         end
     end
+    
+    def destroy
+        @theater = Theater.find(params[:id])
+        @theater.destroy
+        redirect_to system_admin_theaters_path, notice: "映画の削除が完了しました。"
+    end
 end

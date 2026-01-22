@@ -20,6 +20,11 @@
         <td><%= theater.formatted_telephone %></td>
         <td>
           <%= link_to "詳細", system_admin_theater_path(theater) %>
+          <%= button_to "削除", [:system_admin, theater], 
+              method: :delete, 
+              onclick: "return confirm('本当に削除しますか？');",
+              form: { data: { turbo: false } }, 
+              class: "button-delete" %>
         </td>
       </tr>
     <% end %>
