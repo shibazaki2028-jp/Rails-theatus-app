@@ -2,8 +2,8 @@ class Account < ApplicationRecord
     has_secure_password
 
     has_many :reservations, dependent: :destroy
-    has_one :administrator
-    has_one :theater, through: :administrator, source: :theater
+    has_one :administrator, dependent: :destroy
+    has_one :theater, through: :administrator, source: :theater, dependent: :destroy
 
     accepts_nested_attributes_for :administrator
 
