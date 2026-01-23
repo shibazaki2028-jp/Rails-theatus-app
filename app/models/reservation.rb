@@ -11,7 +11,18 @@ class Reservation < ApplicationRecord
 
   validate :movie_exhibition_period_check
 
+  validate :screening_time_check
+
   private
+
+  def screening_time_check
+    return if schedule.nil?
+
+    if schedule.screened_at < Time.current
+      errors.add(:base, "上映開始時間を過ぎているため、この回は予約できません。")
+    end
+  end
+
   def movie_exhibition_period_check
     return if schedule.nil? || schedule.movie.nil?
     

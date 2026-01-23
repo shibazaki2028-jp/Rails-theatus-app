@@ -53,13 +53,14 @@ class ReservationsController < ApplicationController
             end
         end
         @reservation.reservation_details.each(&:valid?) 
-        @reservation.save!
 
         if @reservation.save
             redirect_to schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
         else
-            @schedule = Schedule.find(params[:reservation][:schedule_id])
-            @prices = Price.all
+            flash.now[:alert] = @reservation.errors.full_messages.join("、")
+            @reservation = Reservation.new
+            @seats = @schedule.screen.seats.all
+            @reservation_details = @reservation.reservation_details.build     
             render "new"
         end
       end
