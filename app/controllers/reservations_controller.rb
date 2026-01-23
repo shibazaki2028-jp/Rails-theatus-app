@@ -2,6 +2,9 @@ class ReservationsController < ApplicationController
     before_action :set_reservation, only: [:show, :edit, :update, :destroy]
     before_action :set_schedule, only: [:new, :create, :edit, :update, :destroy]
     before_action :logged_in?
+    before_action :set_prices, only: [:new, :edit, :create, :update]
+
+
 
     def index
         @schedules = Schedule.all
@@ -18,10 +21,23 @@ class ReservationsController < ApplicationController
         @seats = @schedule.screen.seats.all
 
         @reservation_details = @reservation.reservation_details.build        
-        @prices = Price.all
     end
 
     def create
+        requested_seat_ids = params[:seat_ids] || []
+
+        already_taken = ReservationDetail.joins(:reservation)
+                                        .where(reservations: { schedule_id: @schedule.id })
+                                        .where(seat_id: requested_seat_ids)
+                                        .exists?
+
+        if already_taken
+            flash.now[:alert] = "申し訳ありません。選択された座席のいずれかが既に予約されています。もう一度選び直してください。"
+            return render_new_with_error
+        end
+
+        @reservation = Reservation.new(account: current_account, schedule: @schedule)
+        
         @reservation = Reservation.new(params[:reservation])
         @reservation.account = current_account
         @reservation.schedule = @schedule
@@ -46,7 +62,13 @@ class ReservationsController < ApplicationController
             @prices = Price.all
             render "new"
         end
-    end
+      end
+      
+      def render_new_with_error
+        @prices = Price.all
+        @seats = @schedule.screen.seats.order(:queue, :verse)
+        render "new", status: :unprocessable_entity
+      end
 
     def edit
         if current_account.system_admin?
@@ -56,7 +78,6 @@ class ReservationsController < ApplicationController
         end
         @schedule = @reservation.schedule
         @seats = @schedule.screen.seats
-        @prices = Price.all
     end
 
     def update
@@ -115,7 +136,7 @@ class ReservationsController < ApplicationController
             
             # new画面の表示に必要なデータを再取得
             @seats = @schedule.screen.seats.order(:queue, :verse)
-            @prices_list = Price.all
+            @prices = Price.all
             @reservation = Reservation.new(schedule: @schedule)
             
             render :new, status: :unprocessable_entity and return
@@ -140,6 +161,10 @@ class ReservationsController < ApplicationController
         elsif @reservation
             @schedule = @reservation.schedule
         end
+    end
+
+    def set_prices
+        @prices = Price.all
     end
         
 end

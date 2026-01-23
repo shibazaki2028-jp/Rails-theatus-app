@@ -8,4 +8,18 @@ class Reservation < ApplicationRecord
 
   validates :account_id, presence: true
   validates :schedule_id, presence: true
-end
+
+  validate :movie_exhibition_period_check
+
+  private
+  def movie_exhibition_period_check
+    return if schedule.nil? || schedule.movie.nil?
+    
+      movie = schedule.movie
+      screened_date = schedule.screened_at.to_date
+
+      if screened_date > movie.ended_on
+        errors.add(:base, "公開期間が終了した映画です")
+      end
+    end
+  end
