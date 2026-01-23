@@ -16,20 +16,17 @@
       <span style="width: 40px;"><%= queue %>行:</span>
       
       <% seats_in_row.each do |seat| %>
-        <% 
-          is_reserved_by_others = seat.reserved?(@schedule) && !my_seat_ids.include?(seat.id)
-        %>
+        <% is_my_seat = @current_seat_ids&.include?(seat.id) %>
+        <% is_others_reserved = @other_reserved_seat_ids&.include?(seat.id) %>
         
-        <label class="seat-label <%= 'reserved-by-others' if is_reserved_by_others %>">
-<%= check_box_tag "seat_ids[]", seat.id, my_seat_ids.include?(seat.id), 
-    class: "seat-check",
-    data: { 
-      seat_id: seat.id, 
-      seat_name: "#{queue}行-#{seat.verse}",
-      initial_price_id: @reservation.reservation_details.find_by(seat_id: seat.id)&.price_id 
-    }
-%>
-          <span><%= seat.verse %></span>
+        <label class="seat-label <%= 'reserved' if is_others_reserved %> <%= 'selected' if is_my_seat %>" for="seat_<%= seat.id %>">
+          <%= check_box_tag "seat_ids[]", seat.id, 
+                            is_my_seat,
+                            id: "seat_#{seat.id}", 
+                            class: "seat-check", 
+                            data: { seat_id: seat.id, seat_name: "#{queue}-#{seat.verse}" },
+                            disabled: is_others_reserved %>
+          <span class="seat-number"><%= seat.verse %></span>
         </label>
       <% end %>
     </div>
