@@ -18,8 +18,8 @@
   </tr>
 </table>
 <% if current_account.system_admin? || current_account.theater == @theater %>
-<%= link_to "上映スケジュール登録", new_system_admin_schedule_path %>
-<%= link_to "スクリーン管理一覧", system_admin_theater_screens_path(@theater) %>
+  <%= link_to "上映スケジュール登録", new_system_admin_schedule_path %>
+  <%= link_to "スクリーン管理一覧", system_admin_theater_screens_path(@theater) %>
 <% end %>
 <% if current_account.theater == @theater %>
   <%= link_to "映画館の情報編集", edit_system_admin_theater_path(@theater) %>

@@ -1,4 +1,4 @@
-<% @page_title = "映画館管理(システム管理者)" %>
+<% @page_title = "映画館管理(管理者)" %>
 <h1><%= @page_title %></h1>
 
 <%= link_to "新規映画館登録", new_system_admin_theater_path %>
@@ -20,11 +20,13 @@
         <td><%= theater.formatted_telephone %></td>
         <td>
           <%= link_to "詳細", system_admin_theater_path(theater) %>
-          <%= button_to "削除", [:system_admin, theater], 
+          <% if current_account.system_admin?%>
+            <%= button_to "削除", [:system_admin, theater], 
               method: :delete, 
               onclick: "return confirm('本当に削除しますか？');",
               form: { data: { turbo: false } }, 
               class: "button-delete" %>
+          <% end %>
         </td>
       </tr>
     <% end %>
