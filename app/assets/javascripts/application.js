@@ -1,4 +1,3 @@
-// application.js の一番上にこれを追記
 document.addEventListener('click', (e) => {
   // 管理者モードの座席、かつ予約済み（occupied）をクリックした時
   const seat = e.target.closest(".admin-mode .occupied");
@@ -10,11 +9,14 @@ document.addEventListener('click', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const seatChecks = document.querySelectorAll('.seat-check');
+    const priceOptionsData = document.getElementById('price-options-data');
     const selectedList = document.getElementById('selected-seats-list');
-    if (priceOptionsData) {
-      const priceOptionsHtml = priceOptionsData.innerHTML;
-      const seatChecks = document.querySelectorAll('.seat-check');
+    const seatChecks = document.querySelectorAll('.seat-check');
+
+    //priceOptionsDataがない(予約を作る場合)は、これ以降の処理をスキップ
+    if (!priceOptionsData || !selectedList) return;
+
+    const priceOptionsHtml = priceOptionsData.innerHTML;
 
     const updateSeatDisplay = (checkbox) => {
       const seatId = checkbox.dataset.seatId;
@@ -64,22 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
     seatChecks.forEach(check => {
       check.addEventListener('change', () => updateSeatDisplay(check));
-    });
-  
-    seatChecks.forEach(check => {
+    });  
       if (check.checked) {
         updateSeatDisplay(check);
       }
     });
-  }
-// 管理画面用の処理は独立して動くようにする
-const adminMap = document.querySelector(".admin-mode");
-if (adminMap) {
-    adminMap.addEventListener("click", (e) => {
-        const seat = e.target.closest(".occupied");
-        if (seat) {
-            alert(`座席：${seat.dataset.seatCode}\n予約者：${seat.dataset.customerName} 様`);
-        }
-    });
-}
-});
