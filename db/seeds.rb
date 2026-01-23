@@ -59,7 +59,7 @@ movies = [
       物語の始まりを描く前編。
     TEXT
     published_on: Date.new(2026, 1, 1),
-    ended_on: Date.new(2026, 2, 28),
+    ended_on: Date.new(2028, 2, 28),
     screening_time: 60,
     publish: true
   },
@@ -72,7 +72,7 @@ movies = [
       壮大な物語の完結編。
     TEXT
     published_on: Date.new(2026, 3, 1),
-    ended_on: Date.new(2026, 4, 30),
+    ended_on: Date.new(2028, 4, 30),
     screening_time: 60,
     publish: false
   },
@@ -81,7 +81,7 @@ movies = [
     category: "3",
     body: "うっかり過去に飛んでしまった主人公が巻き起こすドタバタ劇。",
     published_on: Date.new(2025, 1, 15),
-    ended_on: Date.new(2025, 4, 15),
+    ended_on: Date.new(2028, 4, 15),
     screening_time: 90,
     publish: true
   },
@@ -90,7 +90,7 @@ movies = [
     category: "1",
     body: "無くなってしまったアタマを探す少女の物語。",
     published_on: Date.new(2025, 1, 13),
-    ended_on: Date.new(2025, 5, 31),
+    ended_on: Date.new(2028, 5, 31),
     screening_time: 30,
     publish: true
   },
@@ -99,7 +99,7 @@ movies = [
     category: "2",
     body: "街を舞台に繰り広げられるノンストップカーチェイス。",
     published_on: Date.new(2025, 1, 5),
-    ended_on: Date.new(2025, 6, 30),
+    ended_on: Date.new(2028, 6, 30),
     screening_time: 90,
     publish: true
   }
@@ -167,12 +167,53 @@ end
 puts "== Seeding prices (Master Data) =="
 
 prices_data = [
-  { ticket_type: "一般", price: 1900 },
-  { ticket_type: "学生", price: 1500 }
+  { ticket_type: "一般", price: 1500 },
+  { ticket_type: "学生", price: 1000 }
 ]
 
 prices_data.each do |data|
   Price.find_or_create_by!(ticket_type: data[:ticket_type]) do |p|
     p.price = data[:price]
   end
+end
+
+puts "== Seeding specific reservation patterns for 'アタマ探し' =="
+
+atama_sagashi = Movie.find_by(title: "アタマ探し")
+hanako = Account.find_by(email: "hanako@example.com")
+admin = Account.find_by(email: "system@example.com")
+general_price = Price.find_by(ticket_type: "一般")
+
+if atama_sagashi
+  schedule_9am = Schedule.where(movie: atama_sagashi)
+                         .find { |s| s.screened_at.strftime("%H:%M") == "09:00" && s.screened_at > Time.current }
+
+  if schedule_9am
+    res_partial = Reservation.create!(account: hanako, schedule: schedule_9am)
+    schedule_9am.screen.seats.first(10).each do |seat|
+      ReservationDetail.create!(
+        reservation: res_partial,
+        seat: seat,
+        price: general_price,
+      )
+    end
+    puts "Created PARTIAL reservations for #{atama_sagashi.title} at 9:00"
+  end
+
+  schedule_19pm = Schedule.where(movie: atama_sagashi)
+                          .find { |s| s.screened_at.strftime("%H:%M") == "19:00" && s.screened_at > Time.current }
+
+  if schedule_19pm
+    res_full = Reservation.create!(account: admin, schedule: schedule_19pm)
+    schedule_19pm.screen.seats.each do |seat|
+      ReservationDetail.create!(
+        reservation: res_full,
+        seat: seat,
+        price: general_price,
+      )
+    end
+    puts "Created FULL reservations for #{atama_sagashi.title} at 19:00"
+  end
+else
+  puts "!! Error: 'アタマ探し' not found. Please check movie seeding."
 end

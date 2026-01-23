@@ -6,9 +6,11 @@
   <%= select_tag :category, 
         options_for_select(Movie.categories.keys, params[:category]), 
         include_blank: "未選択" %>
-  <%= text_field_tag :address, params[:address], placeholder: "住所" %>
+  <%= select_tag :name, 
+               options_for_select(Theater.pluck(:name).uniq, params[:name]), 
+               include_blank: "未選択" %>
 <%= select_tag :publish, 
-        options_for_select([["公開", true], ["非公開", false]], params[:publish]), 
+        options_for_select([["公開", true], ["公開予定", false]], params[:publish]), 
         include_blank: "全て" %>
   <%= submit_tag "検索" %>
 <% end %>
