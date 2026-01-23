@@ -60,7 +60,7 @@ movies = [
     TEXT
     published_on: Date.new(2026, 1, 1),
     ended_on: Date.new(2026, 2, 28),
-    screening_time: 180,
+    screening_time: 60,
     publish: true
   },
   {
@@ -73,7 +73,7 @@ movies = [
     TEXT
     published_on: Date.new(2026, 3, 1),
     ended_on: Date.new(2026, 4, 30),
-    screening_time: 180,
+    screening_time: 60,
     publish: false
   },
   {
@@ -91,7 +91,7 @@ movies = [
     body: "無くなってしまったアタマを探す少女の物語。",
     published_on: Date.new(2025, 1, 13),
     ended_on: Date.new(2025, 5, 31),
-    screening_time: 180,
+    screening_time: 30,
     publish: true
   },
   {
