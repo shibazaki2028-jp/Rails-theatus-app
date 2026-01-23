@@ -58,7 +58,7 @@ class SystemAdmin::SchedulesController < ApplicationController
 
     def permit_theater_admin!
         return if current_account.system_admin?
-    
+        @schedule = Schedule.find(params[:id])
         if current_account.theater != @schedule.screen.theater
           redirect_to system_admin_schedules_path, alert: "他館のスケジュールは操作できません。"
         end
