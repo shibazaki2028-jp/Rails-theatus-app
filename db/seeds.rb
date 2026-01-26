@@ -184,6 +184,27 @@ hanako = Account.find_by(email: "hanako@example.com")
 admin = Account.find_by(email: "system@example.com")
 general_price = Price.find_by(ticket_type: "一般")
 
+ano_kuni = Movie.find_by(title: "あの国へ行こう")
+
+if ano_kuni
+  schedule_15pm = Schedule.where(movie: ano_kuni)
+                          .find { |s| s.screened_at.strftime("%H:%M") == "15:00" && s.screened_at > Time.current }
+  if schedule_15pm
+    res_single = Reservation.create!(account: hanako, schedule: schedule_15pm)
+    
+    target_seat = schedule_15pm.screen.seats.first
+    
+    if target_seat
+      ReservationDetail.create!(
+        reservation: res_single,
+        seat: target_seat,
+        price: general_price,
+      )
+      puts "Created a single reservation for #{ano_kuni.title} (Seat: #{target_seat.queue}-#{target_seat.verse}) at 15:00"
+    end
+  end
+end
+
 if atama_sagashi
   schedule_9am = Schedule.where(movie: atama_sagashi)
                          .find { |s| s.screened_at.strftime("%H:%M") == "09:00" && s.screened_at > Time.current }
@@ -201,18 +222,21 @@ if atama_sagashi
   end
 
   schedule_19pm = Schedule.where(movie: atama_sagashi)
-                          .find { |s| s.screened_at.strftime("%H:%M") == "19:00" && s.screened_at > Time.current }
+  .find { |s| s.screened_at.strftime("%H:%M") == "19:00" && s.screened_at > Time.current }
 
   if schedule_19pm
-    res_full = Reservation.create!(account: admin, schedule: schedule_19pm)
-    schedule_19pm.screen.seats.each do |seat|
-      ReservationDetail.create!(
-        reservation: res_full,
-        seat: seat,
-        price: general_price,
-      )
-    end
-    puts "Created FULL reservations for #{atama_sagashi.title} at 19:00"
+  res_almost_full = Reservation.create!(account: admin, schedule: schedule_19pm)
+
+  all_seats = schedule_19pm.screen.seats.to_a
+
+  all_seats[0...-1].each do |seat|
+  ReservationDetail.create!(
+  reservation: res_almost_full,
+  seat: seat,
+  price: general_price,
+  )
+  end
+  puts "Created ALMOST FULL reservations (1 seat left) for #{atama_sagashi.title} at 19:00"
   end
 else
   puts "!! Error: 'アタマ探し' not found. Please check movie seeding."
