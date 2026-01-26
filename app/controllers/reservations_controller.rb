@@ -53,14 +53,13 @@ class ReservationsController < ApplicationController
             end
         end
         @reservation.reservation_details.each(&:valid?) 
+        @reservation.save!
 
         if @reservation.save
             redirect_to schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
         else
-            flash.now[:alert] = @reservation.errors.full_messages.join("、")
-            @reservation = Reservation.new
-            @seats = @schedule.screen.seats.all
-            @reservation_details = @reservation.reservation_details.build     
+            @schedule = Schedule.find(params[:reservation][:schedule_id])
+            @prices = Price.all
             render "new"
         end
       end
@@ -87,53 +86,51 @@ class ReservationsController < ApplicationController
     end
 
     def update
-        ActiveRecord::Base.transaction do
-            if current_account.system_admin?
-                @reservation = Reservation.find(params[:id])
-            else
-                @reservation = current_account.reservations.find(params[:id])
-            end
-            @schedule = @reservation.schedule
-        
-            original_details = @reservation.reservation_details
-            original_price_map = original_details.pluck(:price_id).tally
-            original_count = original_details.count
-        
-            new_seat_ids = params[:seat_ids] || []
-            new_price_map = params[:prices]&.values_at(*new_seat_ids)&.map(&:to_i)&.tally || {}
-        
-            if new_seat_ids.count != original_count || new_price_map != original_price_map
-            flash.now[:alert] = "座席数またはチケットタイプの構成が変更前と一致しません。"
-            @seats = @schedule.screen.seats
-            @prices = Price.all 
-            return render :edit
-            end
-        
-            @reservation.reservation_details.destroy_all
-            
-            new_seat_ids.each do |seat_id|
-            @reservation.reservation_details.build(
-            seat_id: seat_id,
-            price_id: params[:prices][seat_id]
-            )
-            end
-            @reservation.save!
-        
-            redirect_to reservation_path(@reservation), notice: "予約内容を変更しました。"
+        if current_account.system_admin?
+            @reservation = Reservation.find(params[:id])
+        else
+            @reservation = current_account.reservations.find(params[:id])
         end
+        @schedule = @reservation.schedule
+      
+        original_details = @reservation.reservation_details
+        original_price_map = original_details.pluck(:price_id).tally
+        original_count = original_details.count
+      
+        new_seat_ids = params[:seat_ids] || []
+        new_price_map = params[:prices]&.values_at(*new_seat_ids)&.map(&:to_i)&.tally || {}
+      
+        if new_seat_ids.count != original_count || new_price_map != original_price_map
+          flash.now[:alert] = "座席数またはチケットタイプの構成が変更前と一致しません。"
+          @seats = @schedule.screen.seats
+          @prices = Price.all 
+          return render :edit
+        end
+      
+          @reservation.reservation_details.destroy_all
+          
+        new_seat_ids.each do |seat_id|
+          @reservation.reservation_details.build(
+          seat_id: seat_id,
+          price_id: params[:prices][seat_id]
+          )
+        end
+        @reservation.save!
+      
+        redirect_to reservation_path(@reservation), notice: "予約内容を変更しました。"
         rescue => e
         detail_errors = @reservation.reservation_details.map { |d| d.errors.full_messages }.flatten.uniq
         flash.now[:alert] = "更新に失敗しました: " + (detail_errors.any? ? detail_errors.join(", ") : e.message)
 
         @schedule = @reservation.schedule
-        @seats = @schedule.screen.seats
+        @seats = @schedule.screen.seats.order(:queue, :verse) 
         @prices = Price.all
         @reserved_details = @schedule.reservation_details.includes(reservation: :account).index_by(&:seat_id)
         
         @current_seat_ids = @reservation.reservation_details.pluck(:seat_id)
         @other_reserved_seat_ids = @reserved_details.keys - @current_seat_ids
 
-        render :edit, status: :unprocessable_entity
+        render :edit
         end
 
     def destroy

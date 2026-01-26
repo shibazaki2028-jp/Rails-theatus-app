@@ -64,10 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
   
-    seatChecks.forEach(check => {
-      check.addEventListener('change', () => updateSeatDisplay(check));
-    });  
-      if (check.checked) {
-        updateSeatDisplay(check);
-      }
-    });
+  seatChecks.forEach(check => {
+    check.addEventListener('change', () => updateSeatDisplay(check));
+    
+    if (check.checked) {
+      updateSeatDisplay(check);
+    }
+  });
+});
