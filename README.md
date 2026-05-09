@@ -1,24 +1,29 @@
-# README
+# Theatus (映画館予約システム)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+授業内のチーム開発課題として制作した、映画館の座席予約システム
+要件定義（ユースケース図・ER図の作成など）から実装までを一貫して行った
+チームでの開発は要件定義を共同で行い、実装については同じ仕様をもとにそれぞれ個人で実装するという形式で開発した
 
-Things you may want to cover:
+## アプリの概要
+ユーザーが上映スケジュールを確認し、希望の座席を選択して予約・取り消し・編集ができるWebアプリケーション
 
-* Ruby version
+## 使用技術
+* **バックエンド:** Ruby on Rails (7.0.4)
+* **データベース:** SQLite3
+* **環境:** Docker
+* **その他:** Gemini(思考モード)
 
-* System dependencies
+**【主な実装機能】**
+* ユーザー登録・ログイン機能
+* 映画・映画館の検索・一覧表示機能
+* 座席の選択および予約作成機能
+* 予約の確認・取り消し機能
+* 映画・映画館・スケジュールの管理機能
+* アカウントの管理機能
 
-* Configuration
+## 工夫した点・学ぶことができた点
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### トランザクション処理について
+予約の更新処理（座席の変更など）を実装する際、最初は単純に「既存の予約詳細をdestroyしてから新しい座席をsaveする」というロジックを組んでいました。
+しかし、この実装では適切に保存できると想定されるケースでも処理がうまくいかず、「古い座席データだけが消滅し、ユーザーの予約が完全に失われる」という致命的なデータの不整合が起こることがあった。
+トランザクション処理を擬似的に実装し、最終的にエラー発生時の処理などについて、どのような処理を実際に行なっているのか、より具体的なイメージを持つことができた。
