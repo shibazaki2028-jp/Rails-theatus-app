@@ -104,21 +104,38 @@ class ReservationsController < ApplicationController
           flash.now[:alert] = "座席数またはチケットタイプの構成が変更前と一致しません。"
           @seats = @schedule.screen.seats
           @prices = Price.all 
+          
+          @current_seat_ids = original_details.pluck(:seat_id)
+          @reserved_details = @schedule.reservation_details.includes(reservation: :account).index_by(&:seat_id)
+          @other_reserved_seat_ids = @reserved_details.keys - @current_seat_ids
           return render :edit
         end
-      
-          @reservation.reservation_details.destroy_all
-          
-        new_seat_ids.each do |seat_id|
-          @reservation.reservation_details.build(
-          seat_id: seat_id,
-          price_id: params[:prices][seat_id]
-          )
+
+        backup_details = original_details.map do |detail|
+            { seat_id: detail.seat_id, price_id: detail.price_id }
         end
-        @reservation.save!
-      
-        redirect_to reservation_path(@reservation), notice: "予約内容を変更しました。"
+
+        begin      
+            @reservation.reservation_details.destroy_all
+          
+            new_seat_ids.each do |seat_id|
+                @reservation.reservation_details.build(
+                seat_id: seat_id,
+                price_id: params[:prices][seat_id]
+                )
+            end
+            @reservation.save!
+        
+            redirect_to reservation_path(@reservation), notice: "予約内容を変更しました。"
         rescue => e
+            @reservation.reservation_details.destroy_all
+
+          backup_details.each do |data|
+            @reservation.reservation_details.create!(
+              seat_id: data[:seat_id],
+              price_id: data[:price_id]
+            )
+          end
         detail_errors = @reservation.reservation_details.map { |d| d.errors.full_messages }.flatten.uniq
         flash.now[:alert] = "更新に失敗しました: " + (detail_errors.any? ? detail_errors.join(", ") : e.message)
 
@@ -132,6 +149,7 @@ class ReservationsController < ApplicationController
 
         render :edit
         end
+    end
 
     def destroy
         @reservation = Reservation.find(params[:id]) 

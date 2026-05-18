@@ -17,7 +17,7 @@
       
       <% seats_in_row.each do |seat| %>
         <% is_my_seat = @current_seat_ids&.include?(seat.id) %>
-        <% is_others_reserved = @other_reserved_seat_ids&.include? (seat.id) && !is_my_seat %>
+        <% is_others_reserved = @other_reserved_seat_ids&.include?(seat.id) && !is_my_seat %>
         
         <label class="seat-label <%= 'reserved' if is_others_reserved %> <%= 'selected' if is_my_seat %>" for="seat_<%= seat.id %>">
           <%= check_box_tag "seat_ids[]", seat.id, 
