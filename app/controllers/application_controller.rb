@@ -11,6 +11,11 @@ class ApplicationController < ActionController::Base
         current_account.present?
     end
 
+    def require_login
+        return if logged_in?
+        redirect_to new_session_path, alert: "ログインが必要です"
+    end
+
     def authenticate_admin!
         unless current_account&.theater_admin? || current_account&.system_admin?
             redirect_to root_path, alert: "管理権限がありません。"
@@ -30,13 +35,5 @@ class ApplicationController < ActionController::Base
                 expires: 1.day.from_now
             }
         end
-    end
-
-    class LoginRequired < StandardError; end
-
-    rescue_from LoginRequired, with: :handle_login_required
-
-    def handle_login_required
-    redirect_to login_path, alert: "権限がないか、ログインが必要です"
     end
 end

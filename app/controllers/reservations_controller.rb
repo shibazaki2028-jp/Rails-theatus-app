@@ -1,9 +1,8 @@
 class ReservationsController < ApplicationController
-    before_action :set_reservation, only: [:show, :edit, :update, :destroy]
-    before_action :set_schedule, only: [:new, :create, :edit, :update, :destroy]
-    before_action :logged_in?
-    before_action :set_prices, only: [:new, :edit, :create, :update]
-
+    before_action :require_login
+    before_action :set_reservation, only: %i[show edit update destroy]
+    before_action :set_schedule, only: %i[new create]
+    before_action :set_prices, only: %i[new edit create update]
 
 
     def index
@@ -13,7 +12,6 @@ class ReservationsController < ApplicationController
 
     def show
         @schedule = @reservation.schedule
-        @reservation = Reservation.find(params[:id])
     end
 
     def new
@@ -62,20 +60,8 @@ class ReservationsController < ApplicationController
             @prices = Price.all
             render "new"
         end
-      end
-      
-      def render_new_with_error
-        @prices = Price.all
-        @seats = @schedule.screen.seats.order(:queue, :verse)
-        render "new", status: :unprocessable_entity
-      end
 
     def edit
-        if current_account.system_admin?
-            @reservation = Reservation.find(params[:id])
-        else
-            @reservation = current_account.reservations.find(params[:id])
-        end
         @schedule = @reservation.schedule
         @seats = @schedule.screen.seats
         @current_seat_ids = @reservation.reservation_details.pluck(:seat_id)
@@ -86,11 +72,6 @@ class ReservationsController < ApplicationController
     end
 
     def update
-        if current_account.system_admin?
-            @reservation = Reservation.find(params[:id])
-        else
-            @reservation = current_account.reservations.find(params[:id])
-        end
         @schedule = @reservation.schedule
       
         original_details = @reservation.reservation_details
@@ -152,7 +133,6 @@ class ReservationsController < ApplicationController
     end
 
     def destroy
-        @reservation = Reservation.find(params[:id]) 
         @reservation.destroy
         redirect_to reservations_path, notice: "予約をキャンセルしました"
     end
@@ -181,9 +161,26 @@ class ReservationsController < ApplicationController
             Price.find(price_id).price
         end
     end
+    
+    private
+
+    def render_new_with_error
+        @prices = Price.all
+        @seats = @schedule.screen.seats.order(:queue, :verse)
+        render "new", status: :unprocessable_entity
+    end
 
     def set_reservation
-        @reservation = Reservation.find(params[:id])
+        #予約の取得方法を統一する。
+        @reservation = 
+            if current_account.system_admin?
+                Reservation.find(params[:id])
+            else
+                current_account.reservations.find(params[:id])
+            end
+        rescue ActiveRecord::RecordNotFound
+            redirect_to reservations_path, alert: "予約が見つからないか、権限がありません"
+        end
     end
 
     def set_schedule
