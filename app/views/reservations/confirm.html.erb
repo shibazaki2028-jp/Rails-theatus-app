@@ -13,7 +13,7 @@
         <td><%= seat.queue %> - <%= seat.verse %></td>
         <td>
           <% price_id = @prices[seat.id.to_s] %>
-          <% price = Price.find(price_id) %>
+          <% price = @selected_prices.fetch(@prices.fetch(seat.id.to_s)) %>
           <%= price.price %>円
         </td>
       </tr>

@@ -1,8 +1,8 @@
 class ReservationsController < ApplicationController
     before_action :require_login
-    before_action :set_reservation, only: %i[show edit update destroy]
-    before_action :set_schedule, only: %i[new create]
-    before_action :set_prices, only: %i[new edit create update]
+    before_action :set_reservation, only: [:show, :edit, :update, :destroy]
+    before_action :set_schedule, only: [:new, :create, :confirm, :edit, :update]
+    before_action :set_prices, only: [:new, :edit, :create, :update]
 
 
     def index
@@ -22,114 +22,64 @@ class ReservationsController < ApplicationController
     end
 
     def create
-        requested_seat_ids = params[:seat_ids] || []
-
-        already_taken = ReservationDetail.joins(:reservation)
-                                        .where(reservations: { schedule_id: @schedule.id })
-                                        .where(seat_id: requested_seat_ids)
-                                        .exists?
-
-        if already_taken
-            flash.now[:alert] = "選択された座席のいずれかが既に予約されています。もう一度選び直してください。"
+        unless valid_reservation_selection?
+            @reservation = Reservation.new(schedule: @schedule)
             return render_new_with_error
         end
+        
+        @reservation = current_account.reservations.build(schedule: @schedule)
 
-        @reservation = Reservation.new(account: current_account, schedule: @schedule)
-        
-        @reservation = Reservation.new(params[:reservation])
-        @reservation.account = current_account
-        @reservation.schedule = @schedule
-        
-        if params[:seat_ids].present?
-            params[:seat_ids].each do |seat_id|
-              price_id = params[:prices][seat_id]
-              
-              @reservation.reservation_details.build(
-                seat_id: seat_id,
-                price_id: price_id
-              )
+        Reservation.transaction do
+            @reservation.save!
+
+            reservation_detail_attributes.each do |attributes|
+                @reservation.reservation_details.create!(attributes)
             end
         end
-        @reservation.reservation_details.each(&:valid?) 
-        @reservation.save!
 
-        if @reservation.save
-            redirect_to schedule_reservation_path(@schedule, @reservation), notice: "座席の予約が完了しました。"
-        else
-            @schedule = Schedule.find(params[:reservation][:schedule_id])
-            @prices = Price.all
-            render "new"
-        end
+        redirect_to schedule_reservation_path(@schedule, @reservation),
+            notice: "座席の予約が完了しました"
+
+    rescue ActiveRecord::RecordInvalid => e
+        @reservation = Reservation.new(schedule: @schedule)
+        flash.now[:alert] = record_error_message(e.record, "予約に失敗しました")
+        render_new_with_error
+    end
 
     def edit
-        @schedule = @reservation.schedule
-        @seats = @schedule.screen.seats
-        @current_seat_ids = @reservation.reservation_details.pluck(:seat_id)
-        
-        @other_reserved_seat_ids = @schedule.reservation_details
-                                            .where.not(reservation_id: @reservation.id)
-                                            .pluck(:seat_id)
+        prepare_edit_form
     end
 
     def update
-        @schedule = @reservation.schedule
-      
-        original_details = @reservation.reservation_details
-        original_price_map = original_details.pluck(:price_id).tally
-        original_count = original_details.count
-      
-        new_seat_ids = params[:seat_ids] || []
-        new_price_map = params[:prices]&.values_at(*new_seat_ids)&.map(&:to_i)&.tally || {}
-      
-        if new_seat_ids.count != original_count || new_price_map != original_price_map
-          flash.now[:alert] = "座席数またはチケットタイプの構成が変更前と一致しません。"
-          @seats = @schedule.screen.seats
-          @prices = Price.all 
-          
-          @current_seat_ids = original_details.pluck(:seat_id)
-          @reserved_details = @schedule.reservation_details.includes(reservation: :account).index_by(&:seat_id)
-          @other_reserved_seat_ids = @reserved_details.keys - @current_seat_ids
-          return render :edit
+        unless valid_reservation_selection?
+            prepare_edit_form
+            return render :edit, status: :unprocessable_entity
         end
 
-        backup_details = original_details.map do |detail|
-            { seat_id: detail.seat_id, price_id: detail.price_id }
+        unless same_ticket_composition?
+            flash.now[:alert] = "座席数またはチケットタイプの構成が変更前と一致しません。"
+            prepare_edit_form
+            return render :edit, status: :unprocessable_entity
         end
 
-        begin      
+        Reservation.transaction do
             @reservation.reservation_details.destroy_all
-          
-            new_seat_ids.each do |seat_id|
-                @reservation.reservation_details.build(
-                seat_id: seat_id,
-                price_id: params[:prices][seat_id]
-                )
+
+            reservation_detail_attributes.each do |attributes|
+                @reservation.reservation_details.create!(attributes)
             end
-            @reservation.save!
-        
-            redirect_to reservation_path(@reservation), notice: "予約内容を変更しました。"
-        rescue => e
-            @reservation.reservation_details.destroy_all
-
-          backup_details.each do |data|
-            @reservation.reservation_details.create!(
-              seat_id: data[:seat_id],
-              price_id: data[:price_id]
-            )
-          end
-        detail_errors = @reservation.reservation_details.map { |d| d.errors.full_messages }.flatten.uniq
-        flash.now[:alert] = "更新に失敗しました: " + (detail_errors.any? ? detail_errors.join(", ") : e.message)
-
-        @schedule = @reservation.schedule
-        @seats = @schedule.screen.seats.order(:queue, :verse) 
-        @prices = Price.all
-        @reserved_details = @schedule.reservation_details.includes(reservation: :account).index_by(&:seat_id)
-        
-        @current_seat_ids = @reservation.reservation_details.pluck(:seat_id)
-        @other_reserved_seat_ids = @reserved_details.keys - @current_seat_ids
-
-        render :edit
         end
+
+        redirect_to reservation_path(@reservation), notice: "予約内容を変更しました。"
+
+    rescue ActiveRecord::RecordInvalid => e
+        #transactionのロールバック後にDB上の変更前状態を読み直す
+        @reservation.reload
+
+        flash.now[:alert] = record_error_message(e.record, "予約内容の更新に失敗しました")
+        prepare_edit_form
+
+        render :edit, status: :unprocessable_entity
     end
 
     def destroy
@@ -138,31 +88,128 @@ class ReservationsController < ApplicationController
     end
 
     def confirm
-        @seat_ids = params[:seat_ids] || []
-        @prices = params[:prices] || {}
-        @schedule = Schedule.find(params[:schedule_id])
-
-        if @seat_ids.empty?
-            flash.now.alert = "座席を1つ以上選択してください"
-            
-            # new画面の表示に必要なデータを再取得
-            @seats = @schedule.screen.seats.order(:queue, :verse)
-            @prices = Price.all
+        unless valid_reservation_selection?
             @reservation = Reservation.new(schedule: @schedule)
-            
-            render :new, status: :unprocessable_entity and return
+            return render_new_with_error
         end
 
-        @selected_seats = Seat.where(id: @seat_ids)
-        @selected_prices = Price.where(id: @prices.values)
+        seats_by_id = @schedule.screen.seats
+                               .where(id: @seat_ids)
+                               .index_by { |seat| seat.id.to_s }
+        
+                               Rails.logger.debug "schedule_id: #{@schedule.id}"
+        Rails.logger.debug "screen_id: #{@schedule.screen.id}"
+        Rails.logger.debug "requested seat_ids: #{@seat_ids.inspect}"
+        Rails.logger.debug "found seat_ids: #{seats_by_id.keys.inspect}"
 
+        @selected_seats = @seat_ids.map { |seat_id| seats_by_id.fetch(seat_id) }
+        
+        @selected_prices = Price.where(id: @price_ids)
+                                .index_by { |price| price.id.to_s }
+
+        @prices = @prices_by_seat
+        
         @sum_price = @selected_seats.sum do |seat|
-            price_id = @prices[seat.id.to_s]
-            Price.find(price_id).price
+            @selected_prices.fetch(@prices.fetch(seat.id.to_s)).price
         end
     end
-    
+
     private
+
+    def valid_reservation_selection?
+        load_selection_params
+
+        errors = []
+        if @seat_ids.empty?
+            errors << "座席を1つ以上選択してください"
+        end
+
+        if @seat_ids.uniq.length != @seat_ids.length
+            errors << "同じ座席を複数選択できません"
+        end
+
+        valid_seat_ids = @schedule.screen.seats
+                                  .where(id: @seat_ids)
+                                  .pluck(:id)
+                                  .map(&:to_s)
+        if (@seat_ids.uniq - valid_seat_ids).any?
+            errors << "スクリーンに存在しない座席が含まれています"
+        end
+        
+        missing_price_seat_ids = @seat_ids.select do |seat_id|
+            @prices_by_seat[seat_id].blank?
+        end
+
+        if missing_price_seat_ids.any?
+            errors << "全ての座席の料金種別を指定してください"
+        end
+
+        valid_price_ids = Price.where(id: @price_ids).pluck(:id).map(&:to_s)
+
+        if (@price_ids.uniq - valid_price_ids).any?
+            errors << "存在しない料金種別が含まれています"
+        end
+
+        if errors.any?
+            flash.now[:alert] = errors.join(" ")
+            return false
+        end
+
+        true
+    end
+
+    def load_selection_params
+        @seat_ids = Array(params[:seat_ids]).reject(&:blank?).map(&:to_s)
+
+        @prices_by_seat = 
+        if params[:prices].present?
+            params[:prices].to_unsafe_h.stringify_keys
+        else
+            {}
+        end
+
+        @price_ids = @seat_ids
+                        .map { |seat_id| @prices_by_seat[seat_id] }
+                        .reject(&:blank?)
+    end
+
+    def reservation_detail_attributes
+        @seat_ids.map do |seat_id|
+            {
+                seat_id: seat_id,
+                price_id: @prices_by_seat.fetch(seat_id)
+            }
+        end
+    end
+
+    def same_ticket_composition?
+        original_price_ids = @reservation.reservation_details
+                                         .pluck(:price_id)
+                                         .sort
+        selected_price_ids = @price_ids.map(&:to_i).sort
+        
+        @seat_ids.length == @reservation.reservation_details.count &&
+            selected_price_ids == original_price_ids
+    end
+
+    def prepare_edit_form
+        @seats = @schedule.screen.seats.order(:queue, :verse)
+        @current_seat_ids = @reservation.reservation_details.pluck(:seat_id)
+
+        @other_reserved_seat_ids = @schedule.reservation_details
+                                            .where.not(reservation_id: @reservation.id)
+                                            .pluck(:seat_id)
+    end
+
+    def record_error_message(record, prefix)
+        details = record.errors.full_messages
+
+        if details.any?
+            "#{prefix}: #{details.join(', ')}"
+        else
+            prefix
+        end
+    end
 
     def render_new_with_error
         @prices = Price.all
@@ -195,4 +242,3 @@ class ReservationsController < ApplicationController
         @prices = Price.all
     end
         
-end
