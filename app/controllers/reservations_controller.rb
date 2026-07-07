@@ -96,11 +96,6 @@ class ReservationsController < ApplicationController
         seats_by_id = @schedule.screen.seats
                                .where(id: @seat_ids)
                                .index_by { |seat| seat.id.to_s }
-        
-                               Rails.logger.debug "schedule_id: #{@schedule.id}"
-        Rails.logger.debug "screen_id: #{@schedule.screen.id}"
-        Rails.logger.debug "requested seat_ids: #{@seat_ids.inspect}"
-        Rails.logger.debug "found seat_ids: #{seats_by_id.keys.inspect}"
 
         @selected_seats = @seat_ids.map { |seat_id| seats_by_id.fetch(seat_id) }
         
