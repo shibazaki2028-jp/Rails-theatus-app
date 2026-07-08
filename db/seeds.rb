@@ -5,31 +5,36 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+puts "== Resetting demo data =="
+
+ReservationDetail.destroy_all
+Reservation.destroy_all
+Schedule.destroy_all
+Seat.destroy_all
+Screen.destroy_all
+Theater.destroy_all
+Movie.destroy_all
+Price.destroy_all
 
 puts "== Seeding accounts (general users) =="
 
-accounts = [
-  {
-    user_name: "花子",
-    email: "hanako@example.com",
-    password: "hanako",
-    role: 2
-  },
-  {
-    user_name: "システム管理者",
-    email: "system@example.com",
-    password: "admin123",
-    role: 0
-  }
-]
+hanako = Account.find_or_initialize_by(email: "hanako@example.com")
+hanako.assign_attributes(
+  user_name: "花子",
+  password: "hanako",
+  role: :general
+)
+hanako.save!
 
-accounts.each do |account_data|
-  Account.create!(account_data)
-end
+admin = Account.find_or_initialize_by(email: "system@example.com")
+admin.assign_attributes(
+  user_name: "システム管理者",
+  password: "admin123",
+  role: :system_admin
+)
+admin.save!
 
-puts "== Resetting & Seeding theaters =="
-
-Theater.destroy_all 
+puts "== Seeding theaters and screens =="
 
 theaters_data = [
   { name: "シアタス 川崎駅前", address: "神奈川県川崎市川崎区駅前本町3-12", tel: "044-601-8123"},
@@ -58,8 +63,8 @@ movies = [
       分断された世界の中で、二人はまだ知らない運命と向き合うことになる。
       物語の始まりを描く前編。
     TEXT
-    published_on: Date.new(2026, 1, 1),
-    ended_on: Date.new(2028, 2, 28),
+    published_on: Date.current - 1.year,
+    ended_on: Date.current + 1.year,
     screening_time: 60,
     publish: true
   },
@@ -71,8 +76,8 @@ movies = [
       選択の先に待つ未来とは――。
       壮大な物語の完結編。
     TEXT
-    published_on: Date.new(2026, 3, 1),
-    ended_on: Date.new(2028, 4, 30),
+    published_on: Date.current - 2.year,
+    ended_on: Date.current + 2.year,
     screening_time: 60,
     publish: false
   },
@@ -80,8 +85,8 @@ movies = [
     title: "あの国へ行こう",
     category: "3",
     body: "うっかり過去に飛んでしまった主人公が巻き起こすドタバタ劇。",
-    published_on: Date.new(2025, 1, 15),
-    ended_on: Date.new(2028, 4, 15),
+    published_on: Date.current - 1.year,
+    ended_on: Date.current + 1.year,
     screening_time: 90,
     publish: true
   },
@@ -89,8 +94,8 @@ movies = [
     title: "アタマ探し",
     category: "1",
     body: "無くなってしまったアタマを探す少女の物語。",
-    published_on: Date.new(2025, 1, 13),
-    ended_on: Date.new(2028, 5, 31),
+    published_on: Date.current - 4.year,
+    ended_on: Date.current + 1.year,
     screening_time: 30,
     publish: true
   },
@@ -98,8 +103,8 @@ movies = [
     title: "カーチェイサー",
     category: "2",
     body: "街を舞台に繰り広げられるノンストップカーチェイス。",
-    published_on: Date.new(2025, 1, 5),
-    ended_on: Date.new(2028, 6, 30),
+    published_on: Date.current - 3.year,
+    ended_on: Date.current + 2.year,
     screening_time: 90,
     publish: true
   }
@@ -118,20 +123,27 @@ end
 
 puts "== Seeding schedules =="
 
-times = ["9:00", "9:00", "15:00", "19:00"]
+base_date = Date.current
+
+schedule_patterns = [
+  { time: "09:00", day_offset: -2 },
+  { time: "09:00", day_offset: 1 },
+  { time: "15:00", day_offset: 1 },
+  { time: "19:00", day_offset: 1 }
+]
 
 screens.each_with_index do |screen, s_index|
-  if screen.theater.name.include?("横浜")
-    movie = created_movies[3]
-  else
-    others = [created_movies[0], created_movies[2],]
-    movie = others[s_index % others.length]
-  end
+  movie =
+    if screen.theater.name.include?("横浜")
+      created_movies[3] # アタマ探し
+    else
+      others = [created_movies[0], created_movies[2]]
+      others[s_index % others.length]
+    end
 
-  times.each_with_index do |time_str, t_index|
-    start_date = (t_index == 0) ? Date.today : Date.tomorrow
-    
-    start_time = Time.zone.parse("#{start_date} #{time_str}")
+  schedule_patterns.each do |pattern|
+    start_date = base_date + pattern[:day_offset].days
+    start_time = Time.zone.parse("#{start_date} #{pattern[:time]}")
     end_time = start_time + movie.screening_time.minutes + 20.minutes
 
     Schedule.create!(
@@ -143,27 +155,33 @@ screens.each_with_index do |screen, s_index|
   end
 end
 
-screens.each do |screen|
-  if screen.theater.name.include?("川崎駅")
-
-    movie = created_movies[4]
-
-    times.each_with_index do |time_str, t_index|
-      start_date = (t_index == 0) ? Date.today + 2.days : Date.today + 3.days
-      
-      start_time = Time.zone.parse("#{start_date} #{time_str}")
-      end_time = start_time + movie.screening_time.minutes + 20.minutes
-
-      Schedule.create!(
-        movie: movie,
-        screen: screen,
-        screened_at: start_time,
-        ended_at: end_time
-      )
-    end
-  end
+kawasaki_station_screen = screens.find do |screen|
+  screen.theater.name.include?("川崎駅")
 end
 
+if kawasaki_station_screen
+  movie = created_movies[4] # カーチェイサー
+
+  car_chaser_patterns = [
+    { time: "09:00", day_offset: 2 },
+    { time: "09:00", day_offset: 3 },
+    { time: "15:00", day_offset: 3 },
+    { time: "19:00", day_offset: 3 }
+  ]
+
+  car_chaser_patterns.each do |pattern|
+    start_date = base_date + pattern[:day_offset].days
+    start_time = Time.zone.parse("#{start_date} #{pattern[:time]}")
+    end_time = start_time + movie.screening_time.minutes + 20.minutes
+
+    Schedule.create!(
+      movie: movie,
+      screen: kawasaki_station_screen,
+      screened_at: start_time,
+      ended_at: end_time
+    )
+  end
+end
 puts "== Seeding prices (Master Data) =="
 
 prices_data = [
@@ -192,8 +210,7 @@ if ano_kuni
   if schedule_15pm
     res_single = Reservation.create!(account: hanako, schedule: schedule_15pm)
     
-    target_seat = schedule_15pm.screen.seats.first
-    
+    target_seat = schedule_15pm.screen.seats.order(:queue, :verse).first
     if target_seat
       ReservationDetail.create!(
         reservation: res_single,
