@@ -41,17 +41,6 @@ Rails.application.routes.draw do
     resources :reservations
   end
 
-  #映画館管理者の機能
-  namespace :theater_admin do
-    root "top#index"
-    resources :screens do
-      resources :seats
-    end
-    #自分の担当している映画館のスケジュール・予約のみアクセス可能
-    resources :schedules 
-    resources :reservations, only: [:show, :edit, :update, :destroy]
-  end
-
   #セッション(ログイン)のルーティング
   resource :session, only: [:new, :create, :destroy]
 

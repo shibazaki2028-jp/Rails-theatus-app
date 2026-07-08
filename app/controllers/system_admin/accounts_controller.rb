@@ -21,7 +21,8 @@ class SystemAdmin::AccountsController < ApplicationController
       if @account.save
         redirect_to root_path, notice: "アカウントを登録しました"
       else
-        render "new"
+        @account.build_administrator if @account.theater_admin? && @account.administrator.blank?
+        render "new", status: :unprocessable_entity
       end
     end
     
@@ -33,10 +34,12 @@ class SystemAdmin::AccountsController < ApplicationController
 
     def update
       @account = Account.find(params[:id])
+      @account.assign_attributes(account_params)
+
       if @account.save
         redirect_to system_admin_account_path(@account), notice: "アカウント情報を更新しました。"
       else
-        render "edit"
+        render "edit", status: :unprocessable_entity
       end
     end
 
