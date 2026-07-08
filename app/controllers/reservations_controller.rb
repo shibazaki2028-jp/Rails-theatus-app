@@ -16,7 +16,7 @@ class ReservationsController < ApplicationController
 
     def new
         @reservation = Reservation.new
-        @seats = @schedule.screen.seats.all
+        @seats = ordered_screen_seats
 
         @reservation_details = @reservation.reservation_details.build        
     end
@@ -111,6 +111,12 @@ class ReservationsController < ApplicationController
 
     private
 
+    def ordered_screen_seats
+        @schedule.screen.seats.to_a.sort_by do |seat|
+            [seat.queue, seat.verse.to_i]
+        end
+    end
+
     def valid_reservation_selection?
         load_selection_params
 
@@ -188,7 +194,7 @@ class ReservationsController < ApplicationController
     end
 
     def prepare_edit_form
-        @seats = @schedule.screen.seats.order(:queue, :verse)
+        @seats = ordered_screen_seats
         @current_seat_ids = @reservation.reservation_details.pluck(:seat_id)
 
         @other_reserved_seat_ids = @schedule.reservation_details
@@ -208,7 +214,7 @@ class ReservationsController < ApplicationController
 
     def render_new_with_error
         @prices = Price.all
-        @seats = @schedule.screen.seats.order(:queue, :verse)
+        @seats = ordered_screen_seats
         render "new", status: :unprocessable_entity
     end
 
