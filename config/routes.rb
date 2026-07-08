@@ -3,14 +3,11 @@ Rails.application.routes.draw do
 
   resources :movies, only: [:index, :show] do
     get "search", on: :collection #映画検索
-    #映画から上映スケジュールを探す導線
-    resources :schedules, only: [:index]
   end
 
   resources :theaters do
     get "search", on: :collection #映画館検索
     #映画館から上映スケジュールを探す導線
-    resources :schedules, only: [:index]
     resources :screens, only: [:index, :show]
   end
 
