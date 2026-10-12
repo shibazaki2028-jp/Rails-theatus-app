@@ -232,10 +232,10 @@ class ReservationsController < ApplicationController
     end
 
     def set_schedule
-        if params[:schedule_id]
-            @schedule = Schedule.find(params[:schedule_id])
-        elsif @reservation
+        if @reservation
             @schedule = @reservation.schedule
+        elsif params[:schedule_id]
+            @schedule = Schedule.find(params[:schedule_id])
         end
     end
 

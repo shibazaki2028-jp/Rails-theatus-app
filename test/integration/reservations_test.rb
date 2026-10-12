@@ -134,6 +134,30 @@ class ReservationsTest < ActionDispatch::IntegrationTest
 
     assert_equal [@seat_b.id], actual_seat_ids
   end
+test "別の上映回のschedule_idを付けても、別スクリーンの座席に変更できない" do
+  login_as(@account_b)
+
+  other_schedule = Schedule.create!(
+    movie: @movie,
+    screen: @other_screen,
+    screened_at: 3.days.from_now.change(hour: 15, min: 0)
+  )
+
+  patch reservation_path(@account_b_reservation), params: {
+    schedule_id: other_schedule.id,
+    seat_ids: [@other_screen_seat.id.to_s],
+    prices: {
+      @other_screen_seat.id.to_s => @price.id.to_s
+    }
+  }
+
+  actual_seat_ids = @account_b_reservation
+                      .reload
+                      .reservation_details
+                      .pluck(:seat_id)
+
+  assert_equal [@seat_b.id], actual_seat_ids
+end
 
   private
 
