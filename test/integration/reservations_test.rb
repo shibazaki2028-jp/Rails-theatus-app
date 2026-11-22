@@ -159,6 +159,55 @@ test "別の上映回のschedule_idを付けても、別スクリーンの座席
   assert_equal [@seat_b.id], actual_seat_ids
 end
 
+  test "空席チェックをすり抜けても、DBの一意制約で止まり、予約画面に戻る" do
+    login_as(@account_b)
+
+    reservation_count = Reservation.count
+    detail_count = ReservationDetail.count
+
+    ReservationDetail.skip_callback(:validate, :before, :seat_availability_check)
+    begin
+      post schedule_reservations_path(@schedule), params: {
+        seat_ids: [@seat_a.id.to_s],
+        prices: {
+          @seat_a.id.to_s => @price.id.to_s
+        }
+      }
+    ensure
+      ReservationDetail.set_callback(:validate, :before, :seat_availability_check)
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal reservation_count, Reservation.count
+    assert_equal detail_count, ReservationDetail.count
+    assert_match "ほかの利用者に予約されました", response.body
+  end
+
+  test "予約変更で空席チェックをすり抜けても、DBの一意制約で止まり、変更前の座席が残る" do
+    login_as(@account_b)
+
+    ReservationDetail.skip_callback(:validate, :before, :seat_availability_check)
+    begin
+      patch reservation_path(@account_b_reservation), params: {
+        seat_ids: [@seat_a.id.to_s],
+        prices: {
+          @seat_a.id.to_s => @price.id.to_s
+        }
+      }
+    ensure
+      ReservationDetail.set_callback(:validate, :before, :seat_availability_check)
+    end
+    assert_response :unprocessable_entity
+
+    actual_seat_ids = @account_b_reservation
+                        .reload
+                        .reservation_details
+                        .pluck(:seat_id)
+
+    assert_equal [@seat_b.id], actual_seat_ids
+    assert_match "ほかの利用者に予約", response.body
+  end
+
   private
 
   def login_as(account)

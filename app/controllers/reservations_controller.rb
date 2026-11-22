@@ -44,6 +44,11 @@ class ReservationsController < ApplicationController
         @reservation = Reservation.new(schedule: @schedule)
         flash.now[:alert] = record_error_message(e.record, "予約に失敗しました")
         render_new_with_error
+
+    rescue ActiveRecord::RecordNotUnique
+        @reservation = Reservation.new(schedule: @schedule)
+        flash.now[:alert] = "選択した座席の一部が、ほかの利用者に予約されました。座席を選び直してください。"
+        render_new_with_error
     end
 
     def edit
@@ -79,6 +84,11 @@ class ReservationsController < ApplicationController
         flash.now[:alert] = record_error_message(e.record, "予約内容の更新に失敗しました")
         prepare_edit_form
 
+        render :edit, status: :unprocessable_entity
+    rescue ActiveRecord::RecordNotUnique
+        @reservation.reload
+        flash.now[:alert] = "選択した座席の一部が、ほかの利用者に予約されました。座席を選び直してください。"
+        prepare_edit_form
         render :edit, status: :unprocessable_entity
     end
 
